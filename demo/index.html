@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydra</title>
+    <link rel="stylesheet" href="/hydra/css">
+</head>
+<body class="demo_element_style">
+    <h1 class="demo_element_style">Hydra Demo Page</h1>
+    <button id="start">Send Signal to Start</button><br><br>
+    <b>New Entity</b><br>
+    <select name="New Entry Type" id="netype">
+        <option value="" disabled selected>Select a type...</option>
+        <option value="player">Player</option>
+        <option value="wall">Wall</option>
+    </select>
+    <input type="text" id="nename" value="Cool Enemy Name">
+    X: <input type="number" id="nex" value="0" style="width:50px">
+    Y: <input type="number" id="ney" value="0" style="width:50px">
+    W: <input type="number" id="new" value="20" style="width:50px">
+    H: <input type="number" id="neh" value="20" style="width:50px">
+    <input type="color" id="necolor" value="#ff0000">
+    <button id="ne">Create New Entity</button>
+    <br><br><br>
+    <code>#hydra</code>
+    <div id="hydra" style="width:40vw;aspect-ratio:1;background-color:rgb(158, 249, 255);">
+    </div>
+    <!-- Reference hydra. Average hydra developers will use CDN -->
+    <script src="/hydra/js"></script>
+    <script src="./demo.js"></script>
+</body>
+</html>
