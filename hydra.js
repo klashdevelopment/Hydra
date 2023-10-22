@@ -80,10 +80,67 @@ document.addEventListener('hydra:signal_start', function(){
                     }
                 }};
             break;
+            case "paint":
+                console.log(`[HY2] Paint element added at X${coordinates[0]} Y${coordinates[1]}`);
+                var paintElement = document.createElement("div");
+                paintElement.id = name.toLowerCase();
+                window.hydra.window.insertAdjacentElement('beforeend',paintElement);
+                paintElement.style.position = `absolute`;
+                paintElement.style.left = `${coordinates[0]}px`;
+                paintElement.style.top = `${coordinates[1]}px`;
+                paintElement.style.width = `${theme.width}px`;
+                paintElement.style.borderRadius = '50%';
+                paintElement.style.height = `${theme.height}px`;
+                var background = "";
+                if(theme.sprite){background=`url("${theme.sprite}")`}
+                if(theme.texture){background=theme.texture}
+                paintElement.style.background = background;
+            break;
             default:
                 console.error('[HY2] Error while adding game element of type "'+type+'" - Type nonexistent');
             break;
         }
+    }
+    window.hydra["log"] = function(text) {
+        console.log("[HY2 Game Log] " + text)
+        alert("HY2 Game Log: " + text)
+    }
+    window.hydra["addLineElement"] = function(x1,y1, x2,y2, color){
+        try{
+        function calcStraightLine () {
+            var coordinatesArray = new Array();
+            // Define differences and error check
+            var dx = Math.abs(x2 - x1);
+            var dy = Math.abs(y2 - y1);
+            var sx = (x1 < x2) ? 1 : -1;
+            var sy = (y1 < y2) ? 1 : -1;
+            var err = dx - dy;
+            // Set first coordinates
+            coordinatesArray.push([y1, x1]);
+            // Main loop
+            while (!((x1 == x2) && (y1 == y2))) {
+                var e2 = err << 1;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x1 += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y1 += sy;
+                }
+                // Set coordinates
+                coordinatesArray.push([y1, x1]);
+            }
+            // Return the result
+            return coordinatesArray;
+        }
+        var linePoints = calcStraightLine();
+        alert("Line calculated");
+        linePoints.forEach(coordinates=>{
+            window.hydra.addGameElement("paint", `${coordinates[0]}-${coordinates[1]}-line`, coordinates, {texture: color, width: 20, height: 20});
+        })
+
+        }catch(ex){alert(ex)}
     }
     console.log("[HY2] Initiated!");
     document.dispatchEvent(InitEvent);

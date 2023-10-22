@@ -11,6 +11,10 @@ document.querySelector('#ne').addEventListener('click', function(){
     if(!window.hydra) return alert("Could not find hydra! Make sure to send the start signal.");
     window.hydra.addGameElement(document.querySelector('#netype').value,document.querySelector('#nename').value,[document.querySelector('#nex').value,document.querySelector('#ney').value],{texture:document.querySelector('#necolor').value,width:document.querySelector('#new').value,height:document.querySelector('#neh').value})
 })
+document.querySelector('#nl').addEventListener('click', function(){
+    if(!window.hydra) return alert("Could not find hydra! Make sure to send the start signal.");
+    window.hydra.addLineElement(document.querySelector('#nlx1').value, document.querySelector('#nly1').value, document.querySelector('#nlx2').value, document.querySelector('#nly2').value, document.querySelector('#nlcolor').value)
+})
 
 // Our game should only run when we receive init.
 function rungame() {
