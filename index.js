@@ -12,6 +12,11 @@ app.get('/hydra/css', (req,res)=>{
     res.end(require('fs').readFileSync('./hydra.css'))
 });
 
+app.get('/hydra/3d/js', (req,res)=>{
+    res.type('js');
+    res.end(require('fs').readFileSync('./hydra3d.js'))
+});
+
 app.listen(port, ()=>{
     console.log("App listening on port " + port);
 });
