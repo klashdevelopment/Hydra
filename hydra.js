@@ -91,6 +91,17 @@ class SimpleRenderers {
             ctx.drawImage(params.image, sprite.x + offset.x, sprite.y + offset.y, params.width, params.height);
         }, { image, width, height, offset });
     }
+    static pixelMap(width, height, gridWidth, gridHeight, map, colors, offset = { x: 0, y: 0 }) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            for (let i = 0; i < params.gridHeight; i++) {
+                for (let j = 0; j < params.gridWidth; j++) {
+                    const colorKey = params.map[i][j];
+                    ctx.fillStyle = params.colors[colorKey];
+                    ctx.fillRect(sprite.x + params.offset.x + j * (params.width / params.gridWidth) - j, sprite.y + params.offset.y + i * (params.height / params.gridHeight) - i, params.width / params.gridWidth, params.height / params.gridHeight);
+                }
+            }
+        }, { width, height, gridWidth, gridHeight, map, colors, offset });
+    }
     static smileyFace(radius, color, pupilColor='#444', offset = { x: 0, y: 0 }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.fillStyle = params.color;

@@ -33,7 +33,7 @@ function createCoin() {
 var coin;
 
 // start render loop at 120fps
-lib.loop(120);
+lib.loop(60);
 
 // experimental, import klash legacy font
 var interImport = lib.experiments.importCSS("https://legacy.klash.dev/legacy.css");
