@@ -332,6 +332,15 @@ class HydraCanvasLib {
             addTicker(callback) {
                 var uuid = Math.random().toString(36).substring(7);
                 this.tickers.push({ uuid, callback });
+                return uuid;
+            },
+            removeTicker(uuid) {
+                const index = this.tickers.findIndex(t => t.uuid === uuid);
+                if (index !== -1) {
+                    this.tickers.splice(index, 1);
+                    return true;
+                }
+                return false;
             },
             isMouseDown() {
                 return this.keys['Mouse1'];
@@ -412,4 +421,4 @@ class HydraCanvasLib {
         requestAnimationFrame(animate);
     }
 }
-window.hydraLibVersion = '0.0.';
+window.hydraLibVersion = '0.1.0';
