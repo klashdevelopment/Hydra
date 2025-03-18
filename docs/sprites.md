@@ -76,3 +76,4 @@ function callback() {
 // Create renderer with .withShouldRender
 var renderer = SimpleRenderers.text(...)
     .withShouldRender(callback);
+```
