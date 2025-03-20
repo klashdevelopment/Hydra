@@ -202,6 +202,20 @@ class HydraCanvasLib {
                 if(sprite.collider) {
                     sprite.collider.drawGizmos(this.ctx, sprite, color, width);
                 }
+            },
+            createLinearGradient: (x0, y0, x1, y1, colorStops) => {
+                const gradient = this.ctx.createLinearGradient(x0, y0, x1, y1);
+                for (const [offset, color] of Object.entries(colorStops)) {
+                    gradient.addColorStop(parseFloat(offset), color);
+                }
+                return gradient;
+            },
+            createRadialGradient: (x0, y0, r0, x1, y1, r1, colorStops) => {
+                const gradient = this.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+                for (const [offset, color] of Object.entries(colorStops)) {
+                    gradient.addColorStop(parseFloat(offset), color);
+                }
+                return gradient;
             }
         };
         this.experiments = {
@@ -347,6 +361,79 @@ class HydraCanvasLib {
             }
         };
         this.world = {
+            effects: {
+                vingette: {
+                    enabled: false,
+                    color: 'rgb(0, 0, 0)',
+                    opacity: 0.5
+                },
+                bloom: {
+                    enabled: false,
+                    intensity: 0.5,
+                    color: 'rgb(255, 255, 255)',
+                    threshold: 0.8,
+                    radius: 10
+                }
+            },
+            _drawEffects(canvas) {
+                const ctx = canvas.getContext('2d');
+            
+                if (this.effects.vingette.enabled) {
+                    const gradient = ctx.createRadialGradient(
+                        canvas.width / 2, canvas.height / 2, 0,
+                        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) / 2
+                    );
+                    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                    gradient.addColorStop(1, this.effects.vingette.color);
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.globalAlpha = this.effects.vingette.opacity;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.globalAlpha = 1.0;
+                }
+            
+                if (this.effects.bloom.enabled) {
+                    // Bloom effect implementation:
+                    // Create an offscreen canvas for the bloom effect
+                    const offscreenCanvas = document.createElement('canvas');
+                    offscreenCanvas.width = canvas.width;
+                    offscreenCanvas.height = canvas.height;
+                    const offscreenCtx = offscreenCanvas.getContext('2d');
+                    
+                    // Draw the current canvas content to the offscreen canvas
+                    offscreenCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                    
+                    // Apply a threshold to isolate bright areas
+                    const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                        if (brightness < this.effects.bloom.threshold * 255) {
+                            data[i + 3] = 0; // Set alpha to 0 for pixels below the threshold
+                        } else {
+                            // Apply bloom color and intensity
+                            const color = this.effects.bloom.color.match(/\d+/g).map(Number);
+                            data[i] = color[0] * this.effects.bloom.intensity;
+                            data[i + 1] = color[1] * this.effects.bloom.intensity;
+                            data[i + 2] = color[2] * this.effects.bloom.intensity;
+                            data[i + 3] = 255; // Set alpha to full for bright pixels
+                        }
+                    }
+                    
+                    offscreenCtx.putImageData(imageData, 0, 0);
+                    
+                    // Apply a blur filter to the offscreen canvas
+                    offscreenCtx.filter = `blur(${this.effects.bloom.radius}px)`;
+                    offscreenCtx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+                    
+                    // Draw the blurred content back to the main canvas with a lighter composite operation
+                    ctx.save();
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+                    ctx.restore();
+                }
+            },
             background: '#111',
             showBackground: true,
             setShowBackground(show) {
@@ -400,6 +487,7 @@ class HydraCanvasLib {
                 sprite.renderer.call(this.ctx, sprite);
             }
         }
+        this.world._drawEffects(this.canvas);
     }
 
     loop(fps = 60) {

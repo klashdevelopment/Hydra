@@ -41,6 +41,10 @@ var interImport = lib.experiments.importCSS("https://legacy.klash.dev/legacy.css
 // set background color to a dark grey
 lib.world.setBackgroundColor('#9af');
 
+// enable bloom effect
+lib.world.effects.bloom.enabled = true;
+lib.world.effects.bloom.threshold = 0.78;
+
 const sound = lib.sounds.createSFX('examples/sfx/coin.mp3');
 
 // text sprite with function for live updatable text

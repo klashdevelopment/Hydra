@@ -22,3 +22,7 @@ Hydra provides a `hydra.utility` for simple ease of use functions.
 - `hydra.utility.getScreenCenter` > {x, y}
 - `hydra.utility.getScreenSize` > {width, height}
 - `hydra.utility.drawColliderGizmos` - `sprite, color?, width?`
+- `hydra.utility.createLinearGradient` - `x0, y0, x1, y1, colorStops`
+- `hydra.utility.createRadialGradient` - `x0, y0, r0, x1, y1, r1, colorStops`
+
+The last 2 gradient funcs can be used within any "color" property.

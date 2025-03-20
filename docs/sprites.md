@@ -44,10 +44,11 @@ new HydraSpriteRenderer((ctx, sprite, params) => {
 The `SimpleRenderers` object defines static functions to allow easy creation of renderer objects, the most useful being `combination`.
 
 **Numbers**: width, height, radius, gridWidth, gridHeight, fontSize <br/>
-**Strings**: text*, color, pupilColor, fontName, url <br/>
+**Strings**: text*, color*, pupilColor, fontName, url <br/>
 **{x,y} map**: offset <br/>
 **string[]**: map <br/>
 **{char, color} map**: colors <br/>
+**Gradients**: color* <br/>
 
 \* text can also be a function if live updates are needed
 
