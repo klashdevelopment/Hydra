@@ -1,0 +1,98 @@
+[ HYDRA Code Map v0.1.0 ]
+- showOnscreenDebugger (variable)
+- HydraSpriteRenderer (class)
+      params: render, params, shouldRender
+      methods: call, withShouldRender
+- invertColor (function)
+      params: hex
+- SimpleRenderers (class)
+      static methods:
+      - rectangle (function)
+            params: width, height, color, offset
+      - roundedRectangle (function)
+            params: width, height, radius, color, offset
+      - circle (function)
+            params: radius, color, offset
+      - blurredCircle (function)
+            params: radius, color, blurAmount, offset
+      - blurredRectangle (function)
+            params: width, height, color, blurAmount, offset
+      - image (function)
+            params: image, width, height, offset
+      - pixelMap (function)
+            params: width, height, gridWidth, gridHeight, map, colors, offset
+      - smileyFace (function)
+            params: radius, color, pupilColor, offset
+      - combination (function)
+            params: renderers
+      - text (function)
+            params: text, fontSize, fontName, color, offset
+- SimpleCheats (class)
+      static methods:
+      - hydraDebug (function)
+            params: lib
+- hydraDefaultProps (variable)
+- HydraCanvasLib (class)
+      params: canvasId, props
+      methods: _drawFrame, loop
+      utility methods:
+      - ease (function)
+            params: amount, duration, callback
+      - getPixelColorAt (function)
+            params: x, y
+      - keepSpriteInBounds (function)
+            params: sprite, boundGap
+      - keepAllSpritesInBounds (function)
+            params: boundGap
+      - getScreenCenter (function)
+      - getScreenSize (function)
+      - drawColliderGizmos (function)
+            params: sprite, color, width
+      - createLinearGradient (function)
+            params: x0, y0, x1, y1, colorStops
+      - createRadialGradient (function)
+            params: x0, y0, r0, x1, y1, r1, colorStops
+      experiments methods:
+      - importCSS (function)
+            params: src, addParameters
+      sounds methods:
+      - createSFX (function)
+            params: src
+      collision methods:
+      - makeSquareCollider (function)
+            params: initalWidth, initialHeight, initialOffset
+      - checkSquareCollision (function)
+            params: sprite1, sprite2
+      sprites methods:
+      - createNew (function)
+            params: x, y, renderer
+      - remove (function)
+            params: sprite
+      - moveBy (function)
+            params: sprite, dx, dy
+      - glideTo (function)
+            params: sprite, x, y, duration
+      listen methods:
+      - isKey (function)
+            params: key
+      - isManyKeys (function)
+            params: keys
+      - onKeyDown (function)
+            params: key
+      - addTicker (function)
+            params: callback
+      - removeTicker (function)
+            params: uuid
+      - isMouseDown (function)
+      world methods:
+      - _drawEffects (function)
+            params: canvas
+      - setShowBackground (function)
+            params: show
+      - setBackgroundColor (function)
+            params: color
+      - setBackgroundImage (function)
+            params: image
+      - render (function)
+            params: canvas
+- hydraLibVersion (variable)

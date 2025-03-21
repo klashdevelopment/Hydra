@@ -1,6 +1,7 @@
+// REQUIRED - create hydra library
 const lib = new HydraCanvasLib('game');
 
-// sprite: Add blue square sprite
+// SPRITES -  add "The Box" simple character sprite
 const player = lib.sprites.createNew(50, 50, SimpleRenderers.combination(
     SimpleRenderers.rectangle(54, 54, '#ffad00'),
     SimpleRenderers.rectangle(50, 50, 'black', { x: 2, y: 2 }),
@@ -9,7 +10,7 @@ const player = lib.sprites.createNew(50, 50, SimpleRenderers.combination(
 ));
 player.collider = lib.collision.makeSquareCollider(34, 34, { x: 10, y: 10 });
 
-// random coordinate pictures
+// GAME - random coordinates
 function getRandomX() {
     return Math.floor(Math.random() * (lib.utility.getScreenSize().width - 50));
 }
@@ -17,7 +18,7 @@ function getRandomY() {
     return Math.floor(Math.random() * (lib.utility.getScreenSize().height - 50));
 }
 
-// create and setup a coin
+// GAME - func to create and setup a coin
 function createCoin() {
     const coin = lib.sprites.createNew(getRandomX(), getRandomY(), SimpleRenderers.combination(
         SimpleRenderers.blurredCircle(25, '#000000', 5, {x: -1, y: 1}), // drop shadow
@@ -29,25 +30,26 @@ function createCoin() {
     return coin;
 }
 
-// current coin varialbe
+// GAME - current coin varialbe
 var coin;
 
-// start render loop at 120fps
+// REQUIRED - start render loop at 120fps
 lib.loop(60);
 
-// experimental, import klash legacy font
+// UTILITY - import klash legacy font
 var interImport = lib.experiments.importCSS("https://legacy.klash.dev/legacy.css");
 
-// set background color to a dark grey
+// WORLD - set background color to a dark grey
 lib.world.setBackgroundColor('#9af');
 
-// enable bloom effect
+// WORLD - enable bloom effect
 lib.world.effects.bloom.enabled = true;
 lib.world.effects.bloom.threshold = 0.78;
 
+// SOUNDS - create sound effect for later use
 const sound = lib.sounds.createSFX('examples/sfx/coin.mp3');
 
-// text sprite with function for live updatable text
+// SPRITES - text sprite with function for live updatable text
 var text = lib.sprites.createNew(20,30, SimpleRenderers.text(()=>{
     if(gameStarted) {
         if(gameFinished) {
@@ -60,12 +62,13 @@ var text = lib.sprites.createNew(20,30, SimpleRenderers.text(()=>{
     }
 }, 24, "KlashLegacy", 'black'));
 
-// game variables
+// GAME - game variables
 var gameStarted = false;
 var gameFinished = false;
 var timer = 0;
 var coinCount = 0;
 
+// GAME - function to wait 1s and loop again
 function makeTimeout() {
     setTimeout(()=>{
         if(timer < 1) { // delete coin and finish game
@@ -79,7 +82,7 @@ function makeTimeout() {
     },1000);
 }
 
-// reset variables and start countdown
+// GAME - func to reset variables and begin
 function startGame() {
     timer = 10;
     gameStarted = true;
@@ -89,21 +92,21 @@ function startGame() {
     makeTimeout();
 }
 
-// add listener for each tick
+// EVENTS - add listener for each tick
 lib.listen.addTicker((deltaTime) => {
-    // WASD player movement
+    // EVENTS - WASD player movement
     if (lib.listen.isKey('w')) lib.sprites.moveBy(player, 0, -1 * deltaTime);
     if (lib.listen.isKey('a')) lib.sprites.moveBy(player, -1 * deltaTime, 0);
     if (lib.listen.isKey('s')) lib.sprites.moveBy(player, 0, 1 * deltaTime);
     if (lib.listen.isKey('d')) lib.sprites.moveBy(player, 1 * deltaTime, 0);
 
-    // spacebar to start
+    // EVENTS - spacebar to start
     if(lib.listen.isKey(' ')) {
         if(!gameStarted || gameFinished)
             startGame();
     }
 
-    // check coin collision
+    // COLLISION - check coin collision
     if (coin && lib.collision.checkSquareCollision(player, coin)) {
         sound.play();
         lib.sprites.remove(coin);
@@ -111,6 +114,6 @@ lib.listen.addTicker((deltaTime) => {
         coin = createCoin();
     }
 
-    // make sure player and coins are in bounds
+    // UTILITY - make sure player and coins are in bounds
     lib.utility.keepAllSpritesInBounds(25);
 });
