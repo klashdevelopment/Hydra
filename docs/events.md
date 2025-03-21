@@ -12,6 +12,12 @@ You can then remove tickers if needed:
 lib.listen.removeTicker(ticker)
 ```
 
+## Mouse position
+```js
+lib.listen.mouse.x
+lib.listen.mouse.y
+```
+
 ## Mouse presses
 Use the simple `isMouseDown` api or use the key press api for `Mouse1`:
 ```js

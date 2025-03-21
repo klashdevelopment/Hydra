@@ -63,7 +63,7 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `pixelMap` | width, height, gridWidth, gridHeight, map, colors, offset? | Pixel art using grid of strings and color map |
 | `smileyFace` | radius, color, pupilColor?, offset? | Arc & Circles |
 | `combination` | ...renderers | Combination |
-| `text` | text, fontSize, fontName, color, offset? | Text (can have a function) |
+| `text` | text, fontSize, fontName, color, weight?, offset? | Text (can have a function) |
 
 
 ### Additional properties

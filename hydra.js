@@ -137,11 +137,11 @@ class SimpleRenderers {
             }
         }, { renderers });
     }
-    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0 }) {
+    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0 }, weight='none') {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
-            ctx.font = `${params.fontSize}px ${params.fontName}`;
+            ctx.font = `${weight == 'none' ? '' : weight + ' '}${params.fontSize}px ${params.fontName}`;
             ctx.fillStyle = params.color;
-            ctx.fillText(typeof params.text === 'function' ? params.text() : params.text, sprite.x + offset.x, sprite.y + offset.y);
+            ctx.fillText(typeof params.text === 'function' ? params.text() : params.text, sprite.x + offset.x||0, sprite.y + offset.y||0);
         }, { text, fontSize, fontName, color, offset });
     }
 }
@@ -161,6 +161,7 @@ class HydraCanvasLib {
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = props.canvasWidth;
         this.canvas.height = props.canvasHeight;
+        this.shutoff = false;
         this.utility = {
             ease: (amount, duration, callback) => {
                 let start = null;
@@ -277,35 +278,56 @@ class HydraCanvasLib {
                 };
             }
         };
-        this.collision = {
-            makeSquareCollider(initalWidth, initialHeight, initialOffset = { x: 0, y: 0 }) {
-                return { width: initalWidth, height: initialHeight, offset: initialOffset,
-                    keepInBounds(boundGap, canvas, sprite) {
-                        if (sprite.x + this.width > canvas.width + boundGap) sprite.x = canvas.width - this.width + boundGap;
-                        if (sprite.y + this.height > canvas.height + boundGap) sprite.y = canvas.height - this.height + boundGap;
-                    },
-                    drawGizmos(ctx, sprite, color = "red", width = 1) {
-                        ctx.strokeStyle = color;
-                        ctx.lineWidth = width;
-                        ctx.strokeRect(sprite.x + this.offset.x, sprite.y + this.offset.y, this.width, this.height);
+        this.collision = (function(thiz){return {
+                makeSquareCollider(initalWidth, initialHeight, initialOffset = { x: 0, y: 0 }) {
+                    return { width: initalWidth, height: initialHeight, offset: initialOffset,
+                        keepInBounds(boundGap, canvas, sprite) {
+                            if (sprite.x + this.width > canvas.width + boundGap) sprite.x = canvas.width - this.width + boundGap;
+                            if (sprite.y + this.height > canvas.height + boundGap) sprite.y = canvas.height - this.height + boundGap;
+                        },
+                        drawGizmos(ctx, sprite, color = "red", width = 1) {
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = width;
+                            ctx.strokeRect(sprite.x + this.offset.x, sprite.y + this.offset.y, this.width, this.height);
+                        },
+                        isMouseTouching(sprite, canvas, mouseX, mouseY) {
+                            const rect = canvas.getBoundingClientRect();
+                            const canvasX = mouseX - rect.left;
+                            const canvasY = mouseY - rect.top;
+                            const spriteLeft = sprite.x + this.offset.x;
+                            const spriteRight = spriteLeft + this.width;
+                            const spriteTop = sprite.y + this.offset.y;
+                            const spriteBottom = spriteTop + this.height;
+                            return (
+                              canvasX >= spriteLeft &&
+                              canvasX <= spriteRight &&
+                              canvasY >= spriteTop &&
+                              canvasY <= spriteBottom
+                            );
+                          }
+                    };
+                },
+                checkSquareCollision(sprite1, sprite2) {
+                    var s1x = sprite1.x + sprite1.collider.offset.x;
+                    var s1y = sprite1.y + sprite1.collider.offset.y;
+                    var s1w = sprite1.collider.width;
+                    var s1h = sprite1.collider.height;
+                    var s2x = sprite2.x + sprite2.collider.offset.x;
+                    var s2y = sprite2.y + sprite2.collider.offset.y;
+                    var s2w = sprite2.collider.width;
+                    var s2h = sprite2.collider.height;
+                    return s1x < s2x + s2w &&
+                        s1x + s1w > s2x &&
+                        s1y < s2y + s2h &&
+                        s1y + s1h > s2y;
+                },
+                isMouseTouching(sprite) {
+                    if(sprite.collider) {
+                        return sprite.collider.isMouseTouching(sprite, thiz.canvas, thiz.listen.mouse.x, thiz.listen.mouse.y);
                     }
-                };
-            },
-            checkSquareCollision(sprite1, sprite2) {
-                var s1x = sprite1.x + sprite1.collider.offset.x;
-                var s1y = sprite1.y + sprite1.collider.offset.y;
-                var s1w = sprite1.collider.width;
-                var s1h = sprite1.collider.height;
-                var s2x = sprite2.x + sprite2.collider.offset.x;
-                var s2y = sprite2.y + sprite2.collider.offset.y;
-                var s2w = sprite2.collider.width;
-                var s2h = sprite2.collider.height;
-                return s1x < s2x + s2w &&
-                    s1x + s1w > s2x &&
-                    s1y < s2y + s2h &&
-                    s1y + s1h > s2y;
+                }
             }
-        }
+        })(this);
         this.sprites = {
             sprites: [],
             createNew(x, y, renderer) {
@@ -334,6 +356,7 @@ class HydraCanvasLib {
             keys: {},
             keyDowns: {},
             tickers: [],
+            mouse: {x: 0, y: 0},
             isKey(key) {
                 return !!this.keys[key];
             },
@@ -393,41 +416,38 @@ class HydraCanvasLib {
                 }
             
                 if (this.effects.bloom.enabled) {
-                    // Bloom effect implementation:
-                    // Create an offscreen canvas for the bloom effect
+                    // make fake canvas
                     const offscreenCanvas = document.createElement('canvas');
                     offscreenCanvas.width = canvas.width;
                     offscreenCanvas.height = canvas.height;
                     const offscreenCtx = offscreenCanvas.getContext('2d');
-                    
-                    // Draw the current canvas content to the offscreen canvas
                     offscreenCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
                     
-                    // Apply a threshold to isolate bright areas
+                    // make sure light areas are isolated (using threshold)
                     const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height);
                     const data = imageData.data;
                     
                     for (let i = 0; i < data.length; i += 4) {
                         const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
                         if (brightness < this.effects.bloom.threshold * 255) {
-                            data[i + 3] = 0; // Set alpha to 0 for pixels below the threshold
+                            data[i + 3] = 0; // bye bye dark pixels
                         } else {
-                            // Apply bloom color and intensity
+                            // intensify bloom. color must be in "rgb(r,g,b)" format!
                             const color = this.effects.bloom.color.match(/\d+/g).map(Number);
                             data[i] = color[0] * this.effects.bloom.intensity;
                             data[i + 1] = color[1] * this.effects.bloom.intensity;
                             data[i + 2] = color[2] * this.effects.bloom.intensity;
-                            data[i + 3] = 255; // Set alpha to full for bright pixels
+                            data[i + 3] = 255;
                         }
                     }
                     
                     offscreenCtx.putImageData(imageData, 0, 0);
                     
-                    // Apply a blur filter to the offscreen canvas
+                    // apply a blur filter for that bloom effect.
                     offscreenCtx.filter = `blur(${this.effects.bloom.radius}px)`;
                     offscreenCtx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
                     
-                    // Draw the blurred content back to the main canvas with a lighter composite operation
+                    // draw the blurred canvas back to main canvas with a lighter composite operation
                     ctx.save();
                     ctx.globalCompositeOperation = 'lighter';
                     ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
@@ -472,6 +492,10 @@ class HydraCanvasLib {
         window.addEventListener('mousedown', (e) => {
             this.listen.keys['Mouse1'] = true;
         });
+        window.addEventListener('mousemove', (e) => {
+            this.listen.mouse.x = e.clientX;
+            this.listen.mouse.y = e.clientY;
+        });
         window.addEventListener('mouseup', (e) => {
             this.listen.keys['Mouse1'] = false;
         });
@@ -493,20 +517,25 @@ class HydraCanvasLib {
     loop(fps = 60) {
         const interval = 1000 / fps;
         let lastTime = 0;
-
+    
         const animate = (time) => {
-            if (time - lastTime >= interval) {
+            const deltaTime = time - lastTime;
+            if (deltaTime >= interval) {
                 lastTime = time;
                 this.listen.keyDowns = {};
                 this._drawFrame();
                 for (const ticker of this.listen.tickers) {
-                    ticker.callback(interval);
+                    ticker.callback(deltaTime);
                 }
             }
-            requestAnimationFrame(animate);
+            if(!this.shutoff) {
+                requestAnimationFrame(animate);
+            }else {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
         };
-
+    
         requestAnimationFrame(animate);
     }
 }
-window.hydraLibVersion = '0.1.0';
+window.hydraLibVersion = '0.1.1';

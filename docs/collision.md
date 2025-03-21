@@ -18,5 +18,10 @@ Checking collision is then avaliable between two objects with colliders:
 var touching = lib.collision.checkSquareCollision(sprite1, sprite2)
 ```
 
+If you need to check if mouse is touching - that's simple:
+```js
+var touching = lib.collision.isMouseTouching(sprite);
+```
+
 > [!TIP]
 > If needed, check the utility page on how to show gizmos on colliders.
