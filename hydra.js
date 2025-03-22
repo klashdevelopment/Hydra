@@ -139,7 +139,7 @@ class SimpleRenderers {
     }
     static text(text, fontSize, fontName, color, offset = { x: 0, y: 0 }, weight='none') {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
-            ctx.font = `${weight == 'none' ? '' : weight + ' '}${params.fontSize}px ${params.fontName}`;
+            ctx.font = `${weight === 'none' ? '' : weight + ' '}${params.fontSize}px ${params.fontName}`;
             ctx.fillStyle = params.color;
             ctx.fillText(typeof params.text === 'function' ? params.text() : params.text, sprite.x + offset.x||0, sprite.y + offset.y||0);
         }, { text, fontSize, fontName, color, offset });
@@ -154,13 +154,19 @@ class SimpleCheats {
         });
     }
 }
-const hydraDefaultProps = {canvasWidth: 800, canvasHeight: 600};
+const hydraDefaultProps = {enableExperimentalDPR: false, canvasWidth: 800, canvasHeight: 600};
 class HydraCanvasLib {
     constructor(canvasId, props=hydraDefaultProps) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = props.canvasWidth;
         this.canvas.height = props.canvasHeight;
+        if(props.enableExperimentalDPR) {
+            const dpr = window.devicePixelRatio || 1;
+            this.canvas.width = props.canvasWidth * dpr;
+            this.canvas.height = props.canvasHeight * dpr;
+            this.ctx.scale(dpr, dpr);
+        }
         this.shutoff = false;
         this.utility = {
             ease: (amount, duration, callback) => {
@@ -235,7 +241,7 @@ class HydraCanvasLib {
         }
         this.sounds = {
             createSFX: (src) => {
-                const audio = new Audio(src);
+                let audio = new Audio(src);
                 return {
                     play: () => {
                         audio.currentTime = 0;
@@ -271,7 +277,7 @@ class HydraCanvasLib {
                     },
                     editAudio: (callback) => {
                         var l = callback(audio);
-                        if(l && l != null && l != undefined && l instanceof Audio) {
+                        if(l && l instanceof Audio) {
                             audio = l;
                         }
                     }
@@ -308,14 +314,14 @@ class HydraCanvasLib {
                     };
                 },
                 checkSquareCollision(sprite1, sprite2) {
-                    var s1x = sprite1.x + sprite1.collider.offset.x;
-                    var s1y = sprite1.y + sprite1.collider.offset.y;
-                    var s1w = sprite1.collider.width;
-                    var s1h = sprite1.collider.height;
-                    var s2x = sprite2.x + sprite2.collider.offset.x;
-                    var s2y = sprite2.y + sprite2.collider.offset.y;
-                    var s2w = sprite2.collider.width;
-                    var s2h = sprite2.collider.height;
+                    const s1x = sprite1.x + sprite1.collider.offset.x;
+                    const s1y = sprite1.y + sprite1.collider.offset.y;
+                    const s1w = sprite1.collider.width;
+                    const s1h = sprite1.collider.height;
+                    const s2x = sprite2.x + sprite2.collider.offset.x;
+                    const s2y = sprite2.y + sprite2.collider.offset.y;
+                    const s2w = sprite2.collider.width;
+                    const s2h = sprite2.collider.height;
                     return s1x < s2x + s2w &&
                         s1x + s1w > s2x &&
                         s1y < s2y + s2h &&

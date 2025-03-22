@@ -64,6 +64,10 @@ lib.loop(60);
 // Set the background color
 lib.world.setBackgroundColor('#000');
 
+// Enable bloom effects.
+lib.world.effects.bloom.enabled = true;
+lib.world.effects.bloom.intensity = 0.6;
+
 // Create sound effect for power-up collection
 //              Non-AI: I changed this to coin.mp3 from powerUp.mp3
 const powerUpSound = lib.sounds.createSFX('examples/sfx/coin.mp3');
