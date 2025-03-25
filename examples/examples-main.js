@@ -1,5 +1,5 @@
 var _exm_lib = new HydraCanvasLib('game');
-var games = ['coin-game', 'coins', 'dash', 'pixel-character', 'simple', 'space-dodge', 'space-invaders']
+var games = ['coin-game', 'coins', 'dash', 'pixel-character', 'simple', 'space-dodge', 'space-invaders', 'brick-breaker', 'tetris']
 
 var interImport = _exm_lib.experiments.importCSS("https://rsms.me/inter/inter.css");
 
