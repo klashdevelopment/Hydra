@@ -21,7 +21,7 @@ function getRandomY() {
 // GAME - func to create and setup a coin
 function createCoin() {
     const coin = lib.sprites.createNew(getRandomX(), getRandomY(), SimpleRenderers.combination(
-        SimpleRenderers.blurredCircle(25, '#000000', 5, {x: -1, y: 1}), // drop shadow
+        SimpleRenderers.circle(25, '#000000', {x: -1, y: 1, blurAmount: 5}), // drop shadow
         SimpleRenderers.circle(25, '#f1c40f'),
         SimpleRenderers.text('C', 40, 'KlashLegacy', 'black', {x: -14, y: 14})
     ));

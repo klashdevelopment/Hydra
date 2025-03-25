@@ -45,7 +45,7 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 
 **Numbers**: width, height, radius, gridWidth, gridHeight, fontSize <br/>
 **Strings**: text*, color*, pupilColor, fontName, url <br/>
-**{x,y} map**: offset <br/>
+**{x,y,blurAmount,rotation} map**: offset <br/>
 **string[]**: map <br/>
 **{char, color} map**: colors <br/>
 **Gradients**: color* <br/>
@@ -57,8 +57,7 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `rectangle` | width, height, color, offset? | Rectangle |
 | `roundedRectangle` | width, height, radius, color, offset? | Rounded rect |
 | `circle` | radius, color, offset? | Circle |
-| `blurredCircle` | radius, color, blurAmount?, offset? | Shadow circle |
-| `blurredRectangle` | width, height, color, blurAmount?, offset? | Shadow rectangle |
+| `triangle` | width, height, spikePoint, color, offset? | Triangle |
 | `image` | url, width, height, offset? | Image |
 | `pixelMap` | width, height, gridWidth, gridHeight, map, colors, offset? | Pixel art using grid of strings and color map |
 | `smileyFace` | radius, color, pupilColor?, offset? | Arc & Circles |

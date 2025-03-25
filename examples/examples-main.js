@@ -1,5 +1,5 @@
-var _exm_lib = new HydraCanvasLib('game');
-var games = ['coin-game', 'coins', 'dash', 'pixel-character', 'simple', 'space-dodge', 'space-invaders', 'brick-breaker', 'tetris']
+var _exm_lib = new HydraCanvasLib('game', {enableExperimentalDPR: true, canvasHeight: 600, canvasWidth: 800});
+var games = ['coin-game', 'coins', 'dash', 'pixel-character', 'simple', 'space-dodge', 'space-invaders', 'brick-breaker', 'tetris', 'geometry-dash', 'snake']
 
 var interImport = _exm_lib.experiments.importCSS("https://rsms.me/inter/inter.css");
 
@@ -21,8 +21,8 @@ var sprites = games.map((game, i) => {
     return {
         game,
         renderer: SimpleRenderers.combination(
-            SimpleRenderers.roundedRectangle(_exm_lib.utility.getScreenSize().width - 8, 30, 8, '#00000020'),
-            SimpleRenderers.text(`${game}.js`, 20, "Inter", "black", {x: 4, y: 21}, 'regular')
+            SimpleRenderers.text(`${game}.js`, 16, "Inter", "#000", {x: 4, y: 21}),
+            SimpleRenderers.roundedRectangle(_exm_lib.utility.getScreenSize().width - 8, 30, 8, '#00000020')
         ),
         x: 4,
         y: 34 * (i) + 4,
@@ -38,7 +38,10 @@ sprites.forEach(s => {
     s.rs.collider = _exm_lib.collision.makeSquareCollider(s.collider.width,s.collider.height,{x:s.collider.ox,y:s.collider.oy})
 })
 
-_exm_lib.sprites.createNew(2, _exm_lib.utility.getScreenSize().height - 10, SimpleRenderers.text('example selector ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 16, "Inter", '#777', {x: 0, y: 0}, 'bold'));
+_exm_lib.sprites.createNew(2, _exm_lib.utility.getScreenSize().height - 10, 
+SimpleRenderers.combination(
+    SimpleRenderers.text('example selector ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 16, "Inter", '#777', {x: 0, y: 0}, 'bold')
+));
 
 _exm_lib.world.setBackgroundColor('#ddd');
 _exm_lib.loop(30);
