@@ -12,6 +12,13 @@ After this, create an instance of hydra, supplying a **HTML id to a canvas**:
 ```js
 // Uses the element <canvas id="game-canvas">
 const lib = new HydraCanvasLib('game-canvas');
+
+// If you need a different window size:
+const lib = new HydraCanvasLib('game-canvas', { // All are optional
+    canvasWidth: 800,
+    canvasHeight: 600, 
+    enableExperimentalDPR: false // Uses Device-Pixel Ratio for crispness
+});
 ```
 Setup all sprites and prerequisites, then start the game loop with FPS:
 ```js

@@ -64,6 +64,15 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `combination` | ...renderers | Combination |
 | `text` | text, fontSize, fontName, color, weight?, offset? | Text (can have a function) |
 
+### Renderer examples
+Coin with drop shadow:
+```js
+SimpleRenderers.combination(
+    SimpleRenderers.circle(30, 30, '#000000', {blurAmount: 10}), // Drop shadow
+    SimpleRenderers.circle(30, 30, '#f1c40f'), // Circle
+    SimpleRenderers.text('C', 20, 'Arial', '#000') // "C" text
+);
+```
 
 ### Additional properties
 Renderers can be live toggled easily using the shouldRender callbacks:

@@ -196,8 +196,8 @@ class HydraCanvasLib {
     constructor(canvasId, props = hydraDefaultProps) {
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = props.canvasWidth;
-        this.canvas.height = props.canvasHeight;
+        this.canvas.width = props.canvasWidth || 800;
+        this.canvas.height = props.canvasHeight || 600;
         if (props.enableExperimentalDPR) {
             const dpr = window.devicePixelRatio || 1;
             this.canvas.width = props.canvasWidth * dpr;
@@ -249,15 +249,15 @@ class HydraCanvasLib {
             },
             createLinearGradient: (x0, y0, x1, y1, colorStops) => {
                 const gradient = this.ctx.createLinearGradient(x0, y0, x1, y1);
-                for (const [offset, color] of Object.entries(colorStops)) {
-                    gradient.addColorStop(parseFloat(offset), color);
+                for (const stop of colorStops) {
+                    gradient.addColorStop(stop.offset, stop.color);
                 }
                 return gradient;
             },
             createRadialGradient: (x0, y0, r0, x1, y1, r1, colorStops) => {
                 const gradient = this.ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
-                for (const [offset, color] of Object.entries(colorStops)) {
-                    gradient.addColorStop(parseFloat(offset), color);
+                for (const stop of colorStops) {
+                    gradient.addColorStop(stop.offset, stop.color);
                 }
                 return gradient;
             }
