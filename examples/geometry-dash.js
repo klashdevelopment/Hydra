@@ -38,7 +38,7 @@ const ground = lib.sprites.createNew(0,cvscreen.height-60,SimpleRenderers.combin
 ));
 
 const movingObjects=[];
-const movingObjectsSpeed = 0.1;
+const movingObjectsSpeed = 0.12;
 
 function block(x,y) {
     const obj = lib.sprites.createNew(cvscreen.width-(x*50),cvscreen.height-110-(y*50),gd.renderers.cube);
