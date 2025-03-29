@@ -276,6 +276,41 @@ class HydraCanvasLib {
                 }
             }
         }
+        this.tileset = {
+            createTileset(imageUrl, tileWidth, tileHeight) {
+                const tileset = {
+                    imageUrl: imageUrl,
+                    tileWidth: tileWidth,
+                    tileHeight: tileHeight,
+                    getTileRenderer(tileX, tileY, width = tileWidth, height = tileHeight, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+                        const actualTileX = tileX * tileWidth;
+                        const actualTileY = tileY * tileHeight;
+                        const image = new Image();
+                        image.src = imageUrl;
+                        image.width = width;
+                        image.height = height;
+                        return new HydraSpriteRenderer((ctx, sprite, params) => {
+                            ctx.save();
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.imageSmoothingQuality = 'low';
+                            ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
+                            if (params.offset.rotation) {
+                                ctx.rotate(params.offset.rotation * Math.PI / 180);
+                            }
+                            ctx.filter = (params.offset && params.offset.blurAmount) ? 
+                                (params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none') : 'none';
+                            ctx.drawImage(
+                                params.image,
+                                params.actualTileX + 2, params.actualTileY, params.tileWidth, params.tileHeight,
+                                -params.width / 2, -params.height / 2, params.width, params.height
+                            );
+                            ctx.restore();
+                        }, { image, actualTileX, actualTileY, tileWidth, tileHeight, width, height, offset });
+                    }
+                };
+                return tileset;
+            }
+        };
         this.sounds = {
             createSFX: (src) => {
                 let audio = new Audio(src);
