@@ -17,6 +17,7 @@ lib.world.setBackgroundImage("examples/assets/gd-red.png");
 
 const cvscreen = lib.utility.getScreenSize();
 const player = lib.sprites.createNew(50,cvscreen.height-110,SimpleRenderers.combination(
+    SimpleRenderers.rectangle(50,50,'#0004',{x:-5,y:5,blurAmount:4}),
     SimpleRenderers.rectangle(50,50,'black'),
     SimpleRenderers.rectangle(44,44,gd.player.primary, {x:3,y:3}),
     SimpleRenderers.rectangle(10,10,'black', {x:10,y:13}),

@@ -496,6 +496,9 @@ class HydraCanvasLib {
                 }
 
                 if (this.effects.bloom.enabled) {
+                    if(this.background.startsWith('url')) {
+                        throw new Error("Hydra (world > effects) Bloom can't be rendered with crossorigin images (can't get image data)");
+                    }
                     // make fake canvas
                     const offscreenCanvas = document.createElement('canvas');
                     offscreenCanvas.width = canvas.width;
@@ -535,6 +538,7 @@ class HydraCanvasLib {
                 }
             },
             background: '#111',
+            backgroundImages: [],
             showBackground: true,
             setShowBackground(show) {
                 this.showBackground = show;
@@ -549,8 +553,14 @@ class HydraCanvasLib {
                 let ctx = canvas.getContext('2d');
                 if (this.showBackground) {
                     if (this.background.startsWith('url')) {
-                        const img = new Image();
-                        img.src = this.background.substring(4);
+                        var img;
+                        if(this.backgroundImages[this.background]) {
+                            img = this.backgroundImages[this.background];
+                        } else {
+                            img = new Image();
+                            img.src = this.background.substring(4);
+                            this.backgroundImages[this.background] = img;
+                        }
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     } else {
                         ctx.fillStyle = this.background;
