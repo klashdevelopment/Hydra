@@ -34,3 +34,4 @@ lib.loop(60);
 - [Sounds](./sounds)
 - [Sprites](./sprites)
 - [Events](./events)
+- [Storage](./storage)

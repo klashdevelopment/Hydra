@@ -262,6 +262,24 @@ class HydraCanvasLib {
                 return gradient;
             }
         };
+        this.data = {
+            createStorage(key, defaultValue={}) {
+                const storage = {key, data: defaultValue, set(k,v){
+                    data[k] = v;
+                    this.saveData();
+                }, get(k){
+                    return data[k];
+                }, remove(k){
+                    delete data[k];
+                    this.saveData();
+                }, saveData(){
+                    window.localStorage.setItem(key, JSON.stringify(data));
+                }, refreshData(){
+                    data = JSON.parse(window.localStorage.getItem(key)||defaultValue);
+                }};
+                storage.refreshData();
+            }
+        }
         this.experiments = {
             importCSS: (src, addParameters = true) => {
                 var link = document.createElement('link');
