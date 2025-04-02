@@ -43,12 +43,13 @@ new HydraSpriteRenderer((ctx, sprite, params) => {
 ### Simple Renderers
 The `SimpleRenderers` object defines static functions to allow easy creation of renderer objects, the most useful being `combination`.
 
-**Numbers**: width, height, radius, gridWidth, gridHeight, fontSize <br/>
+**Numbers**: width, height, radius, gridWidth, gridHeight, fontSize, x, y, width <br/>
 **Strings**: text*, color*, pupilColor, fontName, url <br/>
-**{x,y,blurAmount,rotation} map**: offset <br/>
+**{x,y,filter,rotation} map**: offset <br/>
 **string[]**: map <br/>
 **{char, color} map**: colors <br/>
 **Gradients**: color* <br/>
+**{x,y} map**: polygon
 
 \* text can also be a function if live updates are needed
 
@@ -63,12 +64,18 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `smileyFace` | radius, color, pupilColor?, offset? | Arc & Circles |
 | `combination` | ...renderers | Combination |
 | `text` | text, fontSize, fontName, color, weight?, offset? | Text (can have a function) |
+| `vertex` | color?, size?, offset? | Single point |
+| `line` | x1, y1, x2, y2, color?, width?, offset? | Single line |
+| `polygon` | verticies, color?, offset? | Polygon with verticies |
+| `star` | spikes, outerRadius, innerRadius, color?, offset? | Star |
+
+Every renderer (besides combination) has the `offset?` optional object as the last parameter. The object can contain an x and y to offset it from the sprite's x/y, as well as a rotation and filter.
 
 ### Renderer examples
 Coin with drop shadow:
 ```js
 SimpleRenderers.combination(
-    SimpleRenderers.circle(30, 30, '#000000', {blurAmount: 10}), // Drop shadow
+    SimpleRenderers.circle(30, 30, '#000000', {filter: 'blur(10px)'}), // Drop shadow
     SimpleRenderers.circle(30, 30, '#f1c40f'), // Circle
     SimpleRenderers.text('C', 20, 'Arial', '#000') // "C" text
 );

@@ -18,7 +18,7 @@ function getRandomY() {
 
 function createCoin() {
     const coin = lib.sprites.createNew(getRandomX(), getRandomY(), SimpleRenderers.combination(
-        SimpleRenderers.circle(25, '#000000', {x: -1, y: 1, blurAmount: 5}),
+        SimpleRenderers.circle(25, '#000000', {x: -1, y: 1, filter: 'blur(5px)'}),
         SimpleRenderers.circle(25, '#f1c40f'),
         SimpleRenderers.text('C', 40, 'KlashLegacy', 'black', {x: -14, y: 14})
     ));

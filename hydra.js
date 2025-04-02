@@ -35,24 +35,24 @@ window.invertColor = function (hex) {
         : '#FFFFFF';
 };
 class SimpleRenderers {
-    static rectangle(width, height, color, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static rectangle(width, height, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.fillStyle = params.color;
             ctx.fillRect(-params.width / 2, -params.height / 2, params.width, params.height);
             ctx.restore();
         }, { width, height, color, offset });
     }
 
-    static roundedRectangle(width, height, radius, color, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static roundedRectangle(width, height, radius, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.moveTo(-params.width / 2 + params.radius, -params.height / 2);
@@ -70,12 +70,12 @@ class SimpleRenderers {
         }, { width, height, radius, color, offset });
     }
 
-    static circle(radius, color, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static circle(radius, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.arc(0, 0, params.radius, 0, 2 * Math.PI);
@@ -84,23 +84,23 @@ class SimpleRenderers {
         }, { radius, color, offset });
     }
 
-    static image(image, width, height, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static image(image, width, height, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.drawImage(params.image, -params.width / 2, -params.height / 2, params.width, params.height);
             ctx.restore();
         }, { image, width, height, offset });
     }
 
-    static triangle(width, height, spikePoint = 50, color, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static triangle(width, height, spikePoint = 50, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.moveTo(-params.width / 2, params.height / 2);
@@ -112,12 +112,12 @@ class SimpleRenderers {
         }, { width, height, spikePoint, color, offset });
     }
 
-    static pixelMap(width, height, gridWidth, gridHeight, map, colors, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static pixelMap(width, height, gridWidth, gridHeight, map, colors, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             for (let i = 0; i < params.gridHeight; i++) {
                 for (let j = 0; j < params.gridWidth; j++) {
                     const colorKey = params.map[i][j];
@@ -129,12 +129,12 @@ class SimpleRenderers {
         }, { width, height, gridWidth, gridHeight, map, colors, offset });
     }
 
-    static smileyFace(radius, color, pupilColor = '#444', offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+    static smileyFace(radius, color, pupilColor = '#444', offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.radius, sprite.y + params.offset.y + params.radius);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.arc(params.radius / 2 + 20, params.radius / 2 + 5, params.radius / 5, 0, 2 * Math.PI);
@@ -169,12 +169,84 @@ class SimpleRenderers {
         }, { renderers });
     }
 
-    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }, weight = 'none') {
+    static vertex(color = '#000', size = 5, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            ctx.save();
+            ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            ctx.fillStyle = params.color;
+            ctx.beginPath();
+            ctx.arc(0, 0, params.size, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.restore();
+        }, { color, size, offset });
+    }
+
+    static line(x1, y1, x2, y2, color = '#000', width = 1, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            ctx.save();
+            ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            ctx.strokeStyle = params.color;
+            ctx.lineWidth = params.width;
+            ctx.beginPath();
+            ctx.moveTo(params.x1, params.y1);
+            ctx.lineTo(params.x2, params.y2);
+            ctx.stroke();
+            ctx.restore();
+        }, { x1, y1, x2, y2, color, width, offset });
+    }
+
+    static polygon(vertices, color = '#000', offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            ctx.save();
+            ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            ctx.fillStyle = params.color;
+            ctx.beginPath();
+            ctx.moveTo(params.vertices[0].x, params.vertices[0].y);
+            for (let i = 1; i < params.vertices.length; i++) {
+                ctx.lineTo(params.vertices[i].x, params.vertices[i].y);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }, { vertices, color, offset });
+    }
+
+    static star(spikes, outerRadius, innerRadius, color = '#000', offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            ctx.save();
+            ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            ctx.fillStyle = params.color;
+            ctx.beginPath();
+            let rotation = Math.PI / 2 * 3;
+            let step = Math.PI / params.spikes;
+            ctx.moveTo(0, -params.outerRadius);
+            for (let i = 0; i < params.spikes; i++) {
+                ctx.lineTo(Math.cos(rotation) * params.outerRadius, Math.sin(rotation) * params.outerRadius);
+                rotation += step;
+                ctx.lineTo(Math.cos(rotation) * params.innerRadius, Math.sin(rotation) * params.innerRadius);
+                rotation += step;
+            }
+            ctx.lineTo(0, -params.outerRadius);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }, { spikes, outerRadius, innerRadius, color, offset });
+    }
+
+    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }, weight = 'none') {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
             if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.blurAmount)?(params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none'):'none';
+            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
             ctx.font = `${weight === 'none' ? '' : weight + ' '}${params.fontSize}px ${params.fontName}`;
             ctx.fillStyle = params.color;
             ctx.fillText(typeof params.text === 'function' ? params.text() : params.text, 0, 0);
@@ -282,7 +354,7 @@ class HydraCanvasLib {
                     imageUrl: imageUrl,
                     tileWidth: tileWidth,
                     tileHeight: tileHeight,
-                    getTileRenderer(tileX, tileY, width = tileWidth, height = tileHeight, offset = { x: 0, y: 0, rotation: 0, blurAmount: 0 }) {
+                    getTileRenderer(tileX, tileY, width = tileWidth, height = tileHeight, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
                         const actualTileX = tileX * tileWidth;
                         const actualTileY = tileY * tileHeight;
                         const image = new Image();
@@ -297,8 +369,8 @@ class HydraCanvasLib {
                             if (params.offset.rotation) {
                                 ctx.rotate(params.offset.rotation * Math.PI / 180);
                             }
-                            ctx.filter = (params.offset && params.offset.blurAmount) ? 
-                                (params.offset.blurAmount > 0 ? `blur(${params.offset.blurAmount}px)` : 'none') : 'none';
+                            ctx.filter = (params.offset && params.offset.filter) ? 
+                                (params.offset.filter) : 'none';
                             ctx.drawImage(
                                 params.image,
                                 params.actualTileX + 2, params.actualTileY, params.tileWidth, params.tileHeight,

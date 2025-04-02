@@ -1,7 +1,7 @@
 const lib = new HydraCanvasLib('game');
 
 // sprite: Add blue square sprite
-const sprite = lib.sprites.createNew(50, 50, SimpleRenderers.roundedRectangle(50, 50, '#3050ff'));
+const sprite = lib.sprites.createNew(50, 50, SimpleRenderers.roundedRectangle(50, 50, 5, '#3050ff'));
 
 // start render loop at 60fps
 lib.loop(60);

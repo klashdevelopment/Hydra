@@ -16,7 +16,7 @@ const lib = new HydraCanvasLib('game-canvas');
 // If you need a different window size:
 const lib = new HydraCanvasLib('game-canvas', { // All are optional
     canvasWidth: 800,
-    canvasHeight: 600, 
+    canvasHeight: 600,
     enableExperimentalDPR: false // Uses Device-Pixel Ratio for crispness
 });
 ```
@@ -32,5 +32,6 @@ lib.loop(60);
 - [Utility](./utility)
 - [Collision](./collision)
 - [Sounds](./sounds)
+- [Tilemaps](./tilemap)
 - [Sprites](./sprites)
 - [Events](./events)

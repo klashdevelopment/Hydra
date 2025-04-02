@@ -35,7 +35,7 @@ function getRandomY() {
 // Function to create an asteroid
 function createAsteroid() {
     const asteroid = lib.sprites.createNew(getRandomX(), -50, SimpleRenderers.combination(
-        SimpleRenderers.circle(50, '#555555', {x: -1, y: 1, blurAmount: 10}),
+        SimpleRenderers.circle(50, '#555555', {x: -1, y: 1, filter: 'blur(10px)'}),
         SimpleRenderers.circle(50, '#888888')
     ));
     asteroid.collider = lib.collision.makeSquareCollider(40, 40, {x: -20, y: -20});
