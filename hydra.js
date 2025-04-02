@@ -332,8 +332,42 @@ class HydraCanvasLib {
                     gradient.addColorStop(stop.offset, stop.color);
                 }
                 return gradient;
+            },
+            getStringWidth(text, fontSize, fontName) {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = props.canvasWidth || 800;
+                tempCanvas.height = props.canvasHeight || 600;
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCtx.font = `${fontSize}px ${fontName}`;
+                return tempCtx.measureText(text).width;
             }
         };
+        this.data = {
+            createStorage(key, defaultValue = {}) {
+                const storage = {
+                    key, data: defaultValue, set(k, v) {
+                        this.data[k] = v;
+                        this.saveData();
+                    }, get(k) {
+                        return this.data[k];
+                    }, remove(k) {
+                        delete this.data[k];
+                        this.saveData();
+                    }, saveData() {
+                        window.localStorage.setItem(key, JSON.stringify(this.data));
+                    }, refreshData() {
+                        if (!window.localStorage.getItem(key)) {
+                            this.data = defaultValue;
+                            this.saveData();
+                        } else {
+                            this.data = JSON.parse(window.localStorage.getItem(key));
+                        }
+                    }
+                };
+                storage.refreshData();
+                return storage;
+            }
+        }
         this.experiments = {
             importCSS: (src, addParameters = true) => {
                 var link = document.createElement('link');
@@ -568,7 +602,7 @@ class HydraCanvasLib {
                 }
 
                 if (this.effects.bloom.enabled) {
-                    if(this.background.startsWith('url')) {
+                    if (this.background.startsWith('url')) {
                         throw new Error("Hydra (world > effects) Bloom can't be rendered with crossorigin images (can't get image data)");
                     }
                     // make fake canvas
@@ -626,7 +660,7 @@ class HydraCanvasLib {
                 if (this.showBackground) {
                     if (this.background.startsWith('url')) {
                         var img;
-                        if(this.backgroundImages[this.background]) {
+                        if (this.backgroundImages[this.background]) {
                             img = this.backgroundImages[this.background];
                         } else {
                             img = new Image();

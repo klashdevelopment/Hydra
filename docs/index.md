@@ -35,3 +35,4 @@ lib.loop(60);
 - [Tilemaps](./tilemap)
 - [Sprites](./sprites)
 - [Events](./events)
+- [Storage](./storage)
