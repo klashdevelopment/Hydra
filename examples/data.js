@@ -43,9 +43,6 @@ let cooldown = 0;
 
 // check for mouse click
 lib.listen.addTicker((dT)=>{
-    lib.utility.drawColliderGizmos(buttonAdd, 'blue');
-    lib.utility.drawColliderGizmos(buttonRem, 'blue');
-
     if(cooldown > 0) {
         cooldown--;
     }

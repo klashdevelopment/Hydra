@@ -71,7 +71,7 @@ function updateGame(deltaTime) {
     }
 
     // Ball collision with paddle
-    if (game.collision.checkSquareCollision(ball, paddle)) {
+    if (game.collision.checkCollision(ball, paddle)) {
         ball.dy = -ball.dy;
     }
 
@@ -79,7 +79,7 @@ function updateGame(deltaTime) {
     for (let row = 0; row < bricks.length; row++) {
         for (let col = 0; col < bricks[row].length; col++) {
             const brick = bricks[row][col];
-            if (brick && game.collision.checkSquareCollision(ball, brick)) {
+            if (brick && game.collision.checkCollision(ball, brick)) {
                 ball.dy = -ball.dy;
                 game.sprites.remove(brick);
                 bricks[row][col] = null;

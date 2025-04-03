@@ -114,7 +114,7 @@ lib.listen.addTicker((deltaTime) => {
     // Move asteroids and check for collisions
     asteroids.forEach((asteroid, index) => {
         lib.sprites.moveBy(asteroid, 0, 2 * deltaTime);
-        if (lib.collision.checkSquareCollision(player, asteroid)) {
+        if (lib.collision.checkCollision(player, asteroid)) {
             showDeathScreen();
             lib.loop(0);  // Stop the game loop
         }
@@ -128,7 +128,7 @@ lib.listen.addTicker((deltaTime) => {
     // Move power-ups and check for collisions
     powerUps.forEach((powerUp, index) => {
         lib.sprites.moveBy(powerUp, 0, 1 * deltaTime);
-        if (lib.collision.checkSquareCollision(player, powerUp)) {
+        if (lib.collision.checkCollision(player, powerUp)) {
             powerUpSound.play();
             lib.sprites.remove(powerUp);
             powerUps[index] = createPowerUp();

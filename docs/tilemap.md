@@ -1,6 +1,6 @@
 # Tilemaps
 
-Tilemaps are in extreme beta.
+Tilemaps are in extreme beta. You can find a demo in examples/tilemap.js, or on the examples site [here](https://raw.githack.com/klashdevelopment/Hydra/main/index.html).
 
 ### Tilesets
 Tilesets let you split up a sprite sheet into sprite renderers.
@@ -20,4 +20,33 @@ Note that the width and height in this function are how the sprite should render
 
 ### Tilemaps
 Tilemap renderers are renderers that use a tileset to draw a world based on a grid of tiles.
-Currently, there's no way to draw the tilemaps nor create a grid. 
+
+Creating a Tilemap comes with both a renderer to put on a sprite, as well as a collider for the sprite for collision checks. These tilemap type colliders simply make each tile have a square collider, as dynamic collision isn't avaliable at the moment.
+
+Once you have your tileset ready, create a tilemap:
+```js
+// The visibleSize is the width/height each tile will be when drawn
+const tilemap = lib.tileset.createTilemap(tileset, map, visibleSize);
+```
+
+The `map` needed is an array of rows, each row being an array of dual-numbers, like below:
+```js
+map = [
+    [[0,0], [0,1]],
+    [[0,0], [0,1]]
+]
+```
+Each outer array represents a row of the tilemap, while each inner array has two numbers - x and y - representing their location in the tileset.
+
+Once this is made, put it on a sprite:
+```js
+const tileSprite = lib.sprites.createNew(0, 0, tilemap.renderer);
+tileSprite.collider = tilemap.collider;
+```
+
+### Tilemap collision
+You can check collision with a tilemap like anything else:
+```js
+// use the tileSprite, not the tilemap/tileset
+lib.collision.checkCollision(tileSprite, exampleOtherSprite)
+```

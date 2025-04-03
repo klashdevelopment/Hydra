@@ -47,7 +47,7 @@ lib.listen.addTicker((deltaTime) => {
     if (lib.listen.isKey('s')) lib.sprites.moveBy(player, 0, 1 * deltaTime);
     if (lib.listen.isKey('d')) lib.sprites.moveBy(player, 1 * deltaTime, 0);
 
-    if (lib.collision.checkSquareCollision(player, coin)) {
+    if (lib.collision.checkCollision(player, coin)) {
         sound.play();
         lib.sprites.remove(coin);
         coin = createCoin();

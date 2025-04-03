@@ -81,7 +81,7 @@ hydra.listen.addTicker((deltaTime) => {
         
         // Check for collisions with enemies
         for (const enemy of enemies) {
-            if (hydra.collision.checkSquareCollision(bullet, enemy)) {
+            if (hydra.collision.checkCollision(bullet, enemy)) {
                 hydra.sprites.remove(bullet);
                 hydra.sprites.remove(enemy);
                 bullets.splice(bullets.indexOf(bullet), 1);

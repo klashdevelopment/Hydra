@@ -1,4 +1,5 @@
 # Hydra 2D Documentation
+Test our demo games [here](https://raw.githack.com/klashdevelopment/Hydra/main/index.html) in the interactive demo.
 
 ## Import and setup
 Add a script to Hydra.js from either CDN or self-host

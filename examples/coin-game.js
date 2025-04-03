@@ -107,7 +107,7 @@ lib.listen.addTicker((deltaTime) => {
     }
 
     // COLLISION - check coin collision
-    if (coin && lib.collision.checkSquareCollision(player, coin)) {
+    if (coin && lib.collision.checkCollision(player, coin)) {
         sound.play();
         lib.sprites.remove(coin);
         if(gameStarted) coinCount++;

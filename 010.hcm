@@ -61,7 +61,7 @@
       collision methods:
       - makeSquareCollider (function)
             params: initalWidth, initialHeight, initialOffset
-      - checkSquareCollision (function)
+      - checkCollision (function)
             params: sprite1, sprite2
       sprites methods:
       - createNew (function)
