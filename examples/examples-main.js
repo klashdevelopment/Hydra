@@ -55,7 +55,6 @@ _exm_lib.listen.addTicker((dT) => {
                     s.click();
                 }
             }
-            // _exm_lib.utility.drawColliderGizmos(s.rs, '#ff0000', 1);
         }
     })
 });

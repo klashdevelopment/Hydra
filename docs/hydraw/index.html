@@ -488,7 +488,7 @@ cancelExport.addEventListener('click', changeExport(false));
 exportPNG.addEventListener('click', exportToPNG);
 exportHydra.addEventListener('click', ()=>{
     const val = exportDoc();
-    alert(JSON.stringify(val));
+    prompt("Copy the values below",JSON.stringify(val));
 });
 
 // Hover text
