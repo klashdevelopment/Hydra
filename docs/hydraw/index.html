@@ -1,0 +1,522 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadpad Export</title>
+
+<style>
+    @import url("https://site-assets.fontawesome.com/releases/v6.6.0/css/all.css");
+@import url("https://rsms.me/inter/inter.css");
+html, body {
+    background: black;
+    color: white;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    vertical-align: baseline;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 5px;
+    font-family: Inter;
+}
+div.basic {
+    padding: 4px;
+    border-radius: 4px;
+    min-width: 40px;
+    background: #222229;
+    height: calc(100% - 20px);
+    border: 2px solid rgb(70, 70, 104);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    flex-direction: column;
+}
+.right-box {
+    font-size: 24px;
+    gap: 12px;
+    color: rgb(148, 228, 255);
+}
+i.active {
+    color: rgb(11, 165, 165);
+}
+.color-box {
+    width: 30px;
+    position: relative;
+    height: 30px;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 3px solid black;
+}
+#color {
+    border: none;
+    outline: none;
+    padding: 0;
+    width: calc(100% + 12px);
+    height: calc(100% + 12px);
+    position: absolute;
+    top: -6px;
+    left: -6px;
+}
+.row {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff20;
+}
+.tile {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    background: var(--bg);
+}
+.center-box {
+    width: 100%;
+}
+.left-box {
+    margin-left: 5px;
+    font-size: 24px;
+    gap: 12px;
+    color: rgb(148, 255, 214);
+}
+code {
+    font-family: mono, JetBrains Mono, monospace;
+    margin-right: 4px;
+}
+input[type="number"], button {
+    background: #111119;
+    border: 2px solid #ffffff30;
+    border-radius: 6px;
+    padding: 3px;
+    color: #ccc;
+    font-family: mono, JetBrains Mono, monospace;
+}
+button i {
+    margin-right: 5px;
+    color: lightblue;
+    font-size: 14px;
+}
+input[type="number"]:focus-within {
+    outline: none;
+}
+button {
+    padding: 6px 14px;
+    color: white;
+    font-family: Inter;
+    font-weight: 800;
+    background: #11111190;
+}
+.export {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #11ddff30;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 4px;
+}
+.left-exp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hidden {
+    display: none !important;
+}
+.hover-text {
+    align-items: center;
+    justify-content: center;
+    background: #00000070;
+    position: absolute;
+    width: fit-content;
+    max-width: 100vw;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 2px solid rgb(70, 70, 104);
+    backdrop-filter: blur(5px);
+    box-shadow: 0px 0px 9px 1px black;
+    z-index: 99;
+}
+.nobg {
+    background: transparent !important;
+    margin: 1px 0;
+}
+</style>
+</head>
+<body>
+<div class="left-box basic">
+    <i class="fa-solid fa-plus" id="new-file" data-hover-text="New File"></i>
+    <i class="fa-solid fa-download" id="export-show" data-hover-text="Export"></i>
+</div>
+<div class="center-box basic">
+    <i class="fa-solid fa-image" style="font-size:30px;margin-bottom:5px;"></i> No active image
+</div>
+<div class="right-box basic">
+    <i class="fa-solid fa-pencil active" data-hover-text="1x1 Pencil"></i>
+    <i class="fa-solid fa-fill" data-hover-text="Fill"></i>
+    <i class="fa-solid fa-eyedropper" data-hover-text="Colorpicker"></i>
+    <i class="fa-solid fa-marker" data-hover-text="3x3 Marker"></i>
+    <i class="fa-solid fa-eraser" data-hover-text="Eraser"></i>
+    <div class="color-box">
+        <input type="color" value="#11ddff" id="color" />
+    </div>
+</div>
+<div class="export hidden">
+    <div class="left-exp">
+        <b>EXPORT YOUR DRAWING</b>
+        <button id="cancel-export"><i class="fa-solid fa-circle-x"></i>Cancel Export</button>
+        <button id="hydra-export"><i class="fa-solid fa-code"> </i>Export to Hydra</button>
+        <button id="png-export"><i class="fa-solid fa-download"></i>Export to PNG</button>
+    </div>
+</div>
+
+<div class="hover-text" style="display:none;"></div>
+<script type="text/javascript">
+    // Fill with .tile elements inside .row elements.
+// Each tile should store their color inside --bg
+// and should change upon click.
+const centerDiv = document.querySelector('.center-box');
+
+// Setup prompting
+function newFile() {
+    centerDiv.innerHTML = `<div class="row nobg">
+        <code>WIDTH</code>
+        <input type="number" max="100" min="1" id="width-input" value="8">
+    </div>
+    <div class="row nobg">
+        <code>HEIGHT</code>
+        <input type="number" max="100" min="1" id="height-input" value="8">
+    </div>
+    <div class="row nobg">
+        <button id="begin">LETS DRAW</button>
+    </div>`;
+    var widthInp = document.querySelector('#width-input'),
+        heightInp = document.querySelector('#height-input'),
+        startButton = document.querySelector('#begin');
+    startButton.addEventListener('click', () => {
+        var width = parseInt(widthInp.value);
+        var height = parseInt(heightInp.value);
+        onStart(width, height);
+    });
+}
+
+const [
+    pencilTool, // one pixel
+    fillTool, // fill
+    eyeDropper, // pick color
+    marker, // 3x3 size
+    eraser // set to transparent
+] = [...document.querySelectorAll('.right-box i')];
+const colorPicker = document.querySelector('#color');
+
+// Global variables
+let currentTool = 'pencil'; // Default tool
+let currentColor = '#11ddff'; // Default color
+
+// Set up tool selection
+[pencilTool, fillTool, eyeDropper, marker, eraser].forEach((tool, index) => {
+    const toolNames = ['pencil', 'fill', 'eyedropper', 'marker', 'eraser'];
+    tool.addEventListener('click', () => {
+        currentTool = toolNames[index];
+        // Remove active class from all tools
+        [pencilTool, fillTool, eyeDropper, marker, eraser].forEach(t => t.classList.remove('active'));
+        // Add active class to selected tool
+        tool.classList.add('active');
+    });
+});
+
+// Set up color picker
+colorPicker.addEventListener('input', () => {
+    currentColor = colorPicker.value;
+});
+
+function onStart(width, height) {
+    // Validate dimensions
+    width = Math.min(Math.max(1, parseInt(width) || 16), 100);
+    height = Math.min(Math.max(1, parseInt(height) || 16), 100);
+
+    // Clear out the centerDiv
+    centerDiv.innerHTML = '';
+
+    // Fill with rows and tiles
+    for (let y = 0; y < height; y++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        for (let x = 0; x < width; x++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.style.setProperty('--bg', 'transparent');
+            tile.dataset.x = x;
+            tile.dataset.y = y;
+
+            // Add event listeners for drawing
+            tile.addEventListener('click', (e) => handleTileClick(e, x, y));
+
+            // Optional: Add drag functionality
+            tile.addEventListener('mouseenter', (e) => {
+                if (e.buttons === 1) { // Left mouse button is pressed
+                    handleTileClick(e, x, y);
+                }
+            });
+
+            row.appendChild(tile);
+        }
+
+        centerDiv.appendChild(row);
+    }
+}
+
+function handleTileClick(event, x, y) {
+    const grid = Array.from(document.querySelectorAll('.row')).map(row =>
+        Array.from(row.querySelectorAll('.tile'))
+    );
+
+    switch (currentTool) {
+        case 'pencil':
+            event.target.style.setProperty('--bg', currentColor);
+            break;
+
+        case 'marker':
+            // 3x3 brush
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    const newY = y + dy;
+                    const newX = x + dx;
+
+                    // Check bounds
+                    if (newY >= 0 && newY < grid.length &&
+                        newX >= 0 && newX < grid[0].length) {
+                        grid[newY][newX].style.setProperty('--bg', currentColor);
+                    }
+                }
+            }
+            break;
+
+        case 'eraser':
+            event.target.style.setProperty('--bg', 'transparent');
+            break;
+
+        case 'eyedropper':
+            const color = event.target.style.getPropertyValue('--bg');
+            if (color && color !== 'transparent') {
+                currentColor = color;
+                colorPicker.value = color;
+            }
+            break;
+
+        case 'fill':
+            const targetColor = event.target.style.getPropertyValue('--bg');
+            floodFill(grid, x, y, targetColor, currentColor);
+            break;
+    }
+}
+
+function floodFill(grid, x, y, targetColor, replacementColor) {
+    // Check bounds
+    if (y < 0 || y >= grid.length || x < 0 || x >= grid[0].length) {
+        return;
+    }
+
+    const currentTile = grid[y][x];
+    const currentColor = currentTile.style.getPropertyValue('--bg');
+
+    // Stop if we're at a different color or already filled
+    if (currentColor !== targetColor || currentColor === replacementColor) {
+        return;
+    }
+
+    // Fill the current pixel
+    currentTile.style.setProperty('--bg', replacementColor);
+
+    // Recursively fill neighbors (4-way connectivity)
+    floodFill(grid, x + 1, y, targetColor, replacementColor);
+    floodFill(grid, x - 1, y, targetColor, replacementColor);
+    floodFill(grid, x, y + 1, targetColor, replacementColor);
+    floodFill(grid, x, y - 1, targetColor, replacementColor);
+}
+
+function exportDoc() {
+    const grid = Array.from(document.querySelectorAll('.row')).map(row =>
+        Array.from(row.querySelectorAll('.tile'))
+    );
+
+    // Map to store color to character mapping
+    const colorMap = new Map();
+    let nextChar = 'A';
+
+    // Reverse map to check if color already has a character
+    const reverseColorMap = {};
+
+    // Create the array of strings representation
+    const result = grid.map(row => {
+        return row.map(tile => {
+            const color = tile.style.getPropertyValue('--bg') || 'transparent';
+
+            if (color === 'transparent') {
+                return ' '; // Use space for transparent
+            }
+
+            if (reverseColorMap[color]) {
+                return reverseColorMap[color];
+            }
+
+            // Assign next character to this color
+            const char = nextChar;
+            reverseColorMap[color] = char;
+            colorMap.set(char, color);
+
+            // Update next character (A-Z, then a-z, then 0-9)
+            if (nextChar === 'Z') {
+                nextChar = 'a';
+            } else if (nextChar === 'z') {
+                nextChar = '0';
+            } else if (nextChar === '9') {
+                // If we run out of characters, start using combinations
+                nextChar = 'A0';
+            } else {
+                // Increment the character
+                if (nextChar.length === 1) {
+                    nextChar = String.fromCharCode(nextChar.charCodeAt(0) + 1);
+                } else {
+                    // Handle multi-character codes
+                    const lastChar = nextChar[nextChar.length - 1];
+                    if (lastChar === '9') {
+                        nextChar = nextChar.slice(0, -1) + '0';
+                    } else {
+                        nextChar = nextChar.slice(0, -1) +
+                            String.fromCharCode(lastChar.charCodeAt(0) + 1);
+                    }
+                }
+            }
+
+            return char;
+        }).join('');
+    });
+
+    // Convert Map to object for the final output
+    const colorObject = {};
+    colorMap.forEach((value, key) => {
+        colorObject[key] = value;
+    });
+
+    return [result, colorObject];
+}
+
+function exportToPNG() {
+    // Get the dimensions of the grid
+    const grid = Array.from(document.querySelectorAll('.row'));
+    const height = grid.length;
+    const width = grid[0].querySelectorAll('.tile').length;
+
+    // Create a canvas element with the appropriate size
+    const canvas = document.createElement('canvas');
+    const tileSize = 10; // Size of each pixel in the output image
+    canvas.width = width * tileSize;
+    canvas.height = height * tileSize;
+
+    // Get the 2D drawing context
+    const ctx = canvas.getContext('2d');
+
+    // Fill the canvas with a white background (optional)
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw each pixel from the grid onto the canvas
+    grid.forEach((row, y) => {
+        Array.from(row.querySelectorAll('.tile')).forEach((tile, x) => {
+            const color = tile.style.getPropertyValue('--bg');
+
+            // Only draw non-transparent pixels
+            if (color && color !== 'transparent') {
+                ctx.fillStyle = color;
+                ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+            }
+        });
+    });
+
+    // Convert the canvas to a data URL and trigger download
+    try {
+        const dataURL = canvas.toDataURL('image/png');
+
+        // Create a download link
+        const link = document.createElement('a');
+        link.download = 'pixel-art.png';
+        link.href = dataURL;
+
+        // Trigger the download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        return dataURL;
+    } catch (error) {
+        console.error('Error exporting to PNG:', error);
+        return null;
+    }
+}
+
+const exportHydra = document.querySelector("#hydra-export");
+const exportPNG = document.querySelector("#png-export");
+const newFileBtn = document.querySelector("#new-file");
+const cancelExport = document.querySelector('#cancel-export');
+const exportButton = document.querySelector('#export-show');
+
+function changeExport(val) {
+    return ()=>{
+        if (val) { document.querySelector('.export').classList.remove('hidden') }
+        if (!val) { document.querySelector('.export').classList.add('hidden') }
+    }
+}
+
+newFileBtn.addEventListener('click', newFile);
+exportButton.addEventListener('click', changeExport(true));
+cancelExport.addEventListener('click', changeExport(false));
+exportPNG.addEventListener('click', exportToPNG);
+exportHydra.addEventListener('click', ()=>{
+    const val = exportDoc();
+    alert(JSON.stringify(val));
+});
+
+// Hover text
+const hovText = document.querySelector('.hover-text');
+function updateHoverPos(mX, mY) {
+    if(mX > document.body.clientWidth/2) {
+        mX -= hovText.clientWidth+15;
+    }else {
+        mX += 20;
+    }
+    mY -= 10;
+    hovText.style.left = `${mX}px`;
+    hovText.style.top = `${mY}px`;
+}
+document.querySelectorAll('i').forEach(icon => {
+    if(icon.dataset['hoverText']) {
+        icon.addEventListener('mouseenter', () => {
+            hovText.style.display = 'flex';
+            hovText.innerText = icon.dataset['hoverText'];
+        });
+        icon.addEventListener('mouseleave', () => {
+            hovText.style.display = 'none';
+        });
+        icon.addEventListener('mousemove', (e) => { updateHoverPos(e.clientX, e.clientY); });
+    }
+})
+</script>
+    
+</body>
+</html>
+                
