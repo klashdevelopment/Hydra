@@ -16,19 +16,19 @@ const tilesetChars = lib.tileset.createTileset(
 
 // Define tile locations for easy use
 const pieces = {
-    single: [0,0],
-    left: [1,0],
-    middle: [2,0],
-    right: [3,0],
-    left_no_bottom: [1,1],
-    middle_no_bottom: [2,1],
-    right_no_bottom: [3,1],
-    dirt_left: [1,2],
-    dirt_none: [2,2],
-    dirt_right: [3,2],
-    dirt_left_bottom: [1,3],
-    dirt_bottom: [2,3],
-    dirt_right_bottom: [3,3]
+    single: [0, 0],
+    left: [1, 0],
+    middle: [2, 0],
+    right: [3, 0],
+    left_no_bottom: [1, 1],
+    middle_no_bottom: [2, 1],
+    right_no_bottom: [3, 1],
+    dirt_left: [1, 2],
+    dirt_none: [2, 2],
+    dirt_right: [3, 2],
+    dirt_left_bottom: [1, 3],
+    dirt_bottom: [2, 3],
+    dirt_right_bottom: [3, 3]
 }
 
 // Use a TileMap to render a grid of tiles
@@ -96,7 +96,7 @@ function applyVelocity() {
     // Apply the velocity to the sprite
     player.x += player.props.velocity.x;
     player.y += player.props.velocity.y;
-    
+
     if (player.y > lib.utility.getScreenSize().height + 100) {
         player.props.velocity.y = 0;
         player.x = 0;
@@ -116,16 +116,16 @@ lib.listen.addTicker((dT) => {
     // lib.utility.drawColliderGizmos(player);
 
     // Jumping & Gravity
-    if(lib.listen.isKey('ArrowUp')) {
+    if (lib.listen.isKey('ArrowUp')) {
         jump();
     }
     gravity(dT);
     applyVelocity();
 
     // Check for left and right movement
-    if(lib.listen.isKey('ArrowLeft')) {
+    if (lib.listen.isKey('ArrowLeft')) {
         player.props.velocity.x = -2;
-    } else if(lib.listen.isKey('ArrowRight')) {
+    } else if (lib.listen.isKey('ArrowRight')) {
         player.props.velocity.x = 2;
     } else {
         player.props.velocity.x = 0;

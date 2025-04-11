@@ -2,7 +2,10 @@
 // With only the .d.ts (types) file!
 
 // Initialize the Hydra Canvas Library
-const hydra = new HydraCanvasLib('game');
+const hydra = new HydraCanvasLib('game', {
+  canvasWidth: 800,
+  canvasHeight: 600
+});
 
 // Game state
 const gameState = {
@@ -14,13 +17,22 @@ const gameState = {
   difficulty: 1
 };
 
-// Create player spaceship
+// Create player spaceship with better design using polygon
 const playerShip = hydra.sprites.createNew(
   hydra.utility.getScreenCenter().x,
   hydra.utility.getScreenCenter().y + 150,
   SimpleRenderers.combination(
-    SimpleRenderers.triangle(30, 40, 0.5, '#3498db'), // Main ship body
-    SimpleRenderers.circle(5, '#e74c3c', { x: 0, y: 10, rotation: 0, filter: '' }) // Engine glow
+    // Main ship body using polygon for better shape
+    SimpleRenderers.polygon([
+      { x: 0, y: -20 },    // Nose
+      { x: 15, y: 10 },    // Right wing
+      { x: 8, y: 15 },     // Right back corner
+      { x: 0, y: 10 },     // Center back
+      { x: -8, y: 15 },    // Left back corner
+      { x: -15, y: 10 },   // Left wing
+    ], '#3498db'),
+    // Engine glow
+    SimpleRenderers.circle(5, '#e74c3c', { x: 0, y: 10, rotation: 0, filter: '' })
   )
 );
 
@@ -184,8 +196,8 @@ const gameTickerId = hydra.listen.addTicker((deltaTime) => {
         }
       }
       
-      // Check collision with player
-      if (!gameState.gameOver && hydra.collision.checkCollision(sprite, playerShip)) {
+      // Check collision with player - with null checking
+      if (!gameState.gameOver && sprite.collider && playerShip.collider && hydra.collision.checkCollision(sprite, playerShip)) {
         gameOver();
       }
     }
