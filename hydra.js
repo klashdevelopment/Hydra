@@ -47,6 +47,10 @@ class SimpleRenderers {
         }, { width, height, color, offset });
     }
 
+    static none() {
+        return new HydraSpriteRenderer(() => {}, {}, () => false);
+    }
+
     static roundedRectangle(width, height, radius, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();

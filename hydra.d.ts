@@ -24,6 +24,7 @@ declare class HydraSpriteRenderer {
 
 declare class SimpleRenderers {
     static rectangle(width: number, height: number, color: string, offset?: Offset): HydraSpriteRenderer;
+    static none(): HydraSpriteRenderer;
     static roundedRectangle(width: number, height: number, radius: number, color: string, offset?: Offset): HydraSpriteRenderer;
     static circle(radius: number, color: string, offset?: Offset): HydraSpriteRenderer;
     static image(image: HTMLImageElement, width: number, height: number, offset?: Offset): HydraSpriteRenderer;

@@ -58,6 +58,7 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `rectangle` | width, height, color, offset? | Rectangle |
 | `roundedRectangle` | width, height, radius, color, offset? | Rounded rect |
 | `circle` | radius, color, offset? | Circle |
+| `none` | | Blank |
 | `triangle` | width, height, spikePoint, color, offset? | Triangle |
 | `image` | url, width, height, offset? | Image |
 | `pixelMap` | width, height, gridWidth, gridHeight, map, colors, offset? | Pixel art using grid of strings and color map |
