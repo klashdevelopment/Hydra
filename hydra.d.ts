@@ -28,8 +28,8 @@ declare class SimpleRenderers {
     static roundedRectangle(width: number, height: number, radius: number, color: string, offset?: Offset): HydraSpriteRenderer;
     static circle(radius: number, color: string, offset?: Offset): HydraSpriteRenderer;
     static image(image: HTMLImageElement, width: number, height: number, offset?: Offset): HydraSpriteRenderer;
-    static triangle(width: number, height: number, spikePoint?: number, color: string, offset?: Offset): HydraSpriteRenderer;
-    static pixelMap(width: number, height: number, gridWidth: number, gridHeight: number, map: any[][], colors: string[], offset?: Offset): HydraSpriteRenderer;
+    static triangle(width: number, height: number, spikePoint: number, color: string, offset?: Offset): HydraSpriteRenderer;
+    static pixelMap(width: number, height: number, gridWidth: number, gridHeight: number, map: string[], colors: any[], offset?: Offset): HydraSpriteRenderer;
     static smileyFace(radius: number, color: string, pupilColor?: string, offset?: Offset): HydraSpriteRenderer;
     static combination(...renderers: HydraSpriteRenderer[]): HydraSpriteRenderer;
     static vertex(color?: string, size?: number, offset?: Offset): HydraSpriteRenderer;
