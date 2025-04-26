@@ -609,7 +609,7 @@ class HydraCanvasLib {
         this.sprites = {
             sprites: [],
             createNew(x, y, renderer) {
-                const sprite = { x, y, renderer, props: {}, collider: null };
+                const sprite = { x, y, renderer, props: {}, zIndex: 1, collider: null };
                 this.sprites.push(sprite);
                 return sprite;
             },
@@ -794,6 +794,8 @@ class HydraCanvasLib {
     _drawFrame() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.world.render(this.canvas);
+        // sort by zIndex
+        this.sprites.sprites.sort((a, b) => a.zIndex - b.zIndex);
         for (const sprite of this.sprites.sprites) {
             if (sprite.renderer.shouldRender()) {
                 sprite.renderer.call(this.ctx, sprite);

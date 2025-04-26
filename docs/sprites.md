@@ -31,6 +31,11 @@ lib.sprites.glideTo(sprite, newX, newY, duration);
 ## Renderers
 There's two main ways to create a renderer for your sprite. Either you can create a custom one, or use the `SimpleRenderers` object to add them in much faster. Each renderer is created with properties that can be passed through to the render cycle, and a callback that is given a `ctx` (canvas context) and sprite.
 
+Each sprite also has a default z-index of 1, but can be changed:
+```js
+sprite.zIndex = 0;
+```
+
 ### Custom Renderer
 You can create your own custom renderer by passing one of these into either `SimpleRenderers.combination` or the `sprites.createNew` function:
 ```js

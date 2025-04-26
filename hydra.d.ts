@@ -3,6 +3,7 @@ interface HydraSprite {
     y: number;
     renderer: HydraSpriteRenderer;
     props: any;
+    zIndex: number;
     collider: any;
 }
 
