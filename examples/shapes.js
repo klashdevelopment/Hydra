@@ -22,6 +22,8 @@ const triangle = lib.sprites.createNew(50, 200, SimpleRenderers.triangle(50, 50,
 
 // sprite: Add orange rectangle
 const rectangle = lib.sprites.createNew(200, 50, SimpleRenderers.rectangle(50, 100, 'orange'));
+// sprite: Change z-index of rectangle
+rectangle.zIndex = 0;
 
 // sprite: Add cyan circle
 const circle = lib.sprites.createNew(400, 200, SimpleRenderers.circle(50, 'cyan'));
