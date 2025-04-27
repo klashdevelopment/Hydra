@@ -215,6 +215,7 @@ declare class HydraCanvasLib {
     world: World;
 
     constructor(canvasId: string, props?: HydraCanvasLibProps);
+    resize(width: number, height: number): void;
     _drawFrame(): void;
     loop(fps?: number): void;
 }

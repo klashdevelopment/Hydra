@@ -282,6 +282,18 @@ class HydraCanvasLib {
             this.ctx.scale(dpr, dpr);
         }
         this.shutoff = false;
+        this.resize = (w,h) => {
+            props.canvasWidth = w;
+            props.canvasHeight = h;
+            this.canvas.width = w;
+            this.canvas.height = h;
+            if (props.enableExperimentalDPR) {
+                const dpr = window.devicePixelRatio || 1;
+                this.canvas.width = w * dpr;
+                this.canvas.height = h * dpr;
+                this.ctx.scale(dpr, dpr);
+            }
+        }
         this.utility = {
             ease: (amount, duration, callback) => {
                 let start = null;
