@@ -1,0 +1,1 @@
+window.location.href = "https://pages.klash.dev/Hydra/hydraw";

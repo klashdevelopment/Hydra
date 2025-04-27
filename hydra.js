@@ -261,7 +261,7 @@ class SimpleRenderers {
 }
 class SimpleCheats {
     static hydraDebug(lib) {
-        lib.sprites.createNew(20, 40, SimpleRenderers.text(`Running on Hydra v${window.hydraLibVersion}`, 20, 'Arial', 'blue')
+        lib.sprites.createNew(20, 40, SimpleRenderers.text(`Running on Hydra v${window.hydraLibVersion}`, 20, 'Arial', '#ddd')
             .withShouldRender(() => showOnscreenDebugger));
         lib.listen.addTicker((deltaTime) => {
             showOnscreenDebugger = (lib.listen.isKey('`'));
