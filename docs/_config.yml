@@ -1,0 +1,5 @@
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-include-cache
+include:
+  - _includes/head-custom.html
