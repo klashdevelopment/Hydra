@@ -1,4 +1,4 @@
 markdown: kramdown
-theme: minima
-minima:
+theme: primer
+primer:
   skin: dark
