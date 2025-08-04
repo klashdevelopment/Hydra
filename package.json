@@ -1,0 +1,25 @@
+{
+  "name": "@klashdevelopment/hydra",
+  "version": "1.0.0",
+  "description": "Hydra is a JavaScript 2D game engine using HTML5 canvas.",
+  "main": "src/hydra.js",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/klashdevelopment/Hydra.git"
+  },
+  "keywords": ["html5", "canvas", "game engine", "2d", "javascript", "game development"],
+  "author": "GavinGoGaming",
+  "license": "GPL-2.0",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/klashdevelopment/Hydra/issues"
+  },
+  "homepage": "https://github.com/klashdevelopment/Hydra#readme"
+}

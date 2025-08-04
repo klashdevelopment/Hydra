@@ -1,6 +1,28 @@
 if (window.hydraLibVersion) {
     throw new Error('Hydra is already installed - check for dual imports.');
 }
+
+function getAxes(vertices) {
+    let axes = [];
+    for (let i = 0; i < vertices.length; i++) {
+        let current = vertices[i];
+        let next = vertices[(i + 1) % vertices.length];
+        let edge = { x: next.x - current.x, y: next.y - current.y };
+        axes.push({ x: -edge.y, y: edge.x }); // perpendicular
+    }
+    return axes;
+}
+
+function projectVertices(vertices, axis) {
+    let min = Infinity, max = -Infinity;
+    for (let vertex of vertices) {
+        let projection = vertex.x * axis.x + vertex.y * axis.y;
+        min = Math.min(min, projection);
+        max = Math.max(max, projection);
+    }
+    return { min, max };
+}
+
 var showOnscreenDebugger = false;
 class HydraSpriteRenderer {
     constructor(render, params, shouldRender = () => true) {
@@ -39,8 +61,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.fillStyle = params.color;
             ctx.fillRect(-params.width / 2, -params.height / 2, params.width, params.height);
             ctx.restore();
@@ -48,15 +70,15 @@ class SimpleRenderers {
     }
 
     static none() {
-        return new HydraSpriteRenderer(() => {}, {}, () => false);
+        return new HydraSpriteRenderer(() => { }, {}, () => false);
     }
 
     static roundedRectangle(width, height, radius, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.moveTo(-params.width / 2 + params.radius, -params.height / 2);
@@ -78,8 +100,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.arc(0, 0, params.radius, 0, 2 * Math.PI);
@@ -92,8 +114,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.drawImage(params.image, -params.width / 2, -params.height / 2, params.width, params.height);
             ctx.restore();
         }, { image, width, height, offset });
@@ -103,8 +125,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.moveTo(-params.width / 2, params.height / 2);
@@ -120,8 +142,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.width / 2, sprite.y + params.offset.y + params.height / 2);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             for (let i = 0; i < params.gridHeight; i++) {
                 for (let j = 0; j < params.gridWidth; j++) {
                     const colorKey = params.map[i][j];
@@ -137,8 +159,8 @@ class SimpleRenderers {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x + params.radius, sprite.y + params.offset.y + params.radius);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
             ctx.fillStyle = params.color;
             ctx.beginPath();
             ctx.arc(params.radius / 2 + 20, params.radius / 2 + 5, params.radius / 5, 0, 2 * Math.PI);
@@ -168,11 +190,25 @@ class SimpleRenderers {
     static combination(...renderers) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             for (const renderer of params.renderers) {
-                if(renderer.shouldRender()) {
+                if (renderer.shouldRender()) {
                     renderer.call(ctx, sprite);
                 }
             }
         }, { renderers });
+    }
+    static combinationWithOffset(offset, ...renderers) {
+        return new HydraSpriteRenderer((ctx, sprite, params) => {
+            ctx.save();
+            ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            for (const renderer of params.renderers) {
+                if (renderer.shouldRender()) {
+                    renderer.call(ctx, { x: 0, y: 0 });
+                }
+            }
+            ctx.restore();
+        }, { offset, renderers });
     }
 
     static vertex(color = '#000', size = 5, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
@@ -246,17 +282,18 @@ class SimpleRenderers {
         }, { spikes, outerRadius, innerRadius, color, offset });
     }
 
-    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }, weight = 'none') {
+    static text(text, fontSize, fontName, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }, weight = 'none', letterSpacing = '0px') {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
             ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
-            if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-            ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
-            ctx.font = `${weight === 'none' ? '' : weight + ' '}${params.fontSize}px ${params.fontName}`;
+            if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+            ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+            ctx.font = `${params.weight === 'none' ? '' : params.weight + ' '}${params.fontSize}px ${params.fontName}`;
+            ctx.letterSpacing = params.letterSpacing;
             ctx.fillStyle = params.color;
             ctx.fillText(typeof params.text === 'function' ? params.text() : params.text, 0, 0);
             ctx.restore();
-        }, { text, fontSize, fontName, color, offset });
+        }, { text, fontSize, fontName, color, offset, letterSpacing, weight });
     }
 }
 class SimpleCheats {
@@ -268,7 +305,7 @@ class SimpleCheats {
         });
     }
 }
-const hydraDefaultProps = { enableExperimentalDPR: false, canvasWidth: 800, canvasHeight: 600 };
+const hydraDefaultProps = { enableExperimentalDPR: true, canvasWidth: 800, canvasHeight: 600 };
 class HydraCanvasLib {
     constructor(canvasId, props = hydraDefaultProps) {
         this.canvas = document.getElementById(canvasId);
@@ -281,8 +318,9 @@ class HydraCanvasLib {
             this.canvas.height = props.canvasHeight * dpr;
             this.ctx.scale(dpr, dpr);
         }
+        this.props = props;
         this.shutoff = false;
-        this.resize = (w,h) => {
+        this.resize = (w, h) => {
             props.canvasWidth = w;
             props.canvasHeight = h;
             this.canvas.width = w;
@@ -326,10 +364,12 @@ class HydraCanvasLib {
                 }
             },
             getScreenCenter: () => {
-                return { x: this.canvas.width / 2, y: this.canvas.height / 2 };
+                const dpr = window.devicePixelRatio || 1;
+                return { x: this.canvas.width / (2 * dpr), y: this.canvas.height / (2 * dpr) };
             },
             getScreenSize: () => {
-                return { width: this.canvas.width, height: this.canvas.height };
+                const dpr = (this.props.enableExperimentalDPR ? window.devicePixelRatio : 1) || 1;
+                return { width: this.canvas.width / dpr, height: this.canvas.height / dpr };
             },
             drawColliderGizmos: (sprite, color = 'red', width = 1) => {
                 if (sprite.collider) {
@@ -397,6 +437,28 @@ class HydraCanvasLib {
                         link.remove();
                     }
                 }
+            },
+            createNoiseRenderer: (width, height, colors = [{
+                r: 0, g: 0, b: 0, a: 1
+            }, {
+                r: 255, g: 255, b: 255, a: 1
+            }], offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) => {
+                return new HydraSpriteRenderer((ctx, sprite, params) => {
+                    // for each pixel pick a color somewhere between the two colors
+                    ctx.save();
+                    ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
+                    if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+                    ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
+                    for (let i = 0; i < params.height; i++) {
+                        for (let j = 0; j < params.width; j++) {
+                            const colorIndex = Math.floor(Math.random() * params.colors.length);
+                            const color = params.colors[colorIndex];
+                            ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a})`;
+                            ctx.fillRect(j, i, 1, 1);
+                        }
+                    }
+                    ctx.restore();
+                }, { width, height, colors, offset });
             }
         }
         this.tileset = {
@@ -409,9 +471,9 @@ class HydraCanvasLib {
                     getTileRenderer(tileX, tileY, width = tileWidth, height = tileHeight, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
                         const actualTileX = tileX * tileWidth;
                         const actualTileY = tileY * tileHeight;
-                        
+
                         var image;
-                        if(this.tileImageCache[imageUrl]) {
+                        if (this.tileImageCache[imageUrl]) {
                             image = this.tileImageCache[imageUrl];
                         } else {
                             image = new Image();
@@ -429,7 +491,7 @@ class HydraCanvasLib {
                             if (params.offset.rotation) {
                                 ctx.rotate(params.offset.rotation * Math.PI / 180);
                             }
-                            ctx.filter = (params.offset && params.offset.filter) ? 
+                            ctx.filter = (params.offset && params.offset.filter) ?
                                 (params.offset.filter) : 'none';
                             ctx.drawImage(
                                 params.image,
@@ -448,12 +510,12 @@ class HydraCanvasLib {
                     renderer: new HydraSpriteRenderer((ctx, sprite, params) => {
                         ctx.save();
                         ctx.translate(sprite.x + params.offset.x, sprite.y + params.offset.y);
-                        if(params.offset.rotation){ctx.rotate(params.offset.rotation * Math.PI / 180);}
-                        ctx.filter = (params.offset&&params.offset.filter)?params.offset.filter:'none';
+                        if (params.offset.rotation) { ctx.rotate(params.offset.rotation * Math.PI / 180); }
+                        ctx.filter = (params.offset && params.offset.filter) ? params.offset.filter : 'none';
                         for (let i = 0; i < params.map.length; i++) {
                             for (let j = 0; j < params.map[i].length; j++) {
                                 const tile = params.map[i][j];
-                                if(tile == null) continue;
+                                if (tile == null) continue;
                                 const tileRenderer = tileset.getTileRenderer(tile[0], tile[1], params.tileSize, params.tileSize);
                                 tileRenderer.call(ctx, { x: j * params.tileSize, y: i * params.tileSize });
                             }
@@ -477,9 +539,9 @@ class HydraCanvasLib {
                             for (let i = 0; i < map.length; i++) {
                                 for (let j = 0; j < map[i].length; j++) {
                                     const tile = map[i][j];
-                                    if(tile == null) continue;
-                                    const tileX = sprite.x +  offset.x + j * tileSize;
-                                    const tileY = sprite.y +  offset.y + i * tileSize;
+                                    if (tile == null) continue;
+                                    const tileX = sprite.x + offset.x + j * tileSize;
+                                    const tileY = sprite.y + offset.y + i * tileSize;
                                     ctx.strokeRect(tileX, tileY, tileSize, tileSize);
                                 }
                             }
@@ -489,10 +551,10 @@ class HydraCanvasLib {
                             for (let i = 0; i < map.length; i++) {
                                 for (let j = 0; j < map[i].length; j++) {
                                     const tile = map[i][j];
-                                    if(tile == null) continue;
+                                    if (tile == null) continue;
                                     const tileX = offset.x + j * tileSize;
                                     const tileY = offset.y + i * tileSize;
-                                    if (lib.collision.checkCollision(sprite, { x: tileX, y: tileY, collider: { type: 'square', width: tileSize, height: tileSize, offset: {x: 0, y: 0} } })) {
+                                    if (lib.collision.checkCollision(sprite, { x: tileX, y: tileY, collider: { type: 'square', width: tileSize, height: tileSize, offset: { x: 0, y: 0 } } })) {
                                         collision = true;
                                         break;
                                     }
@@ -512,6 +574,11 @@ class HydraCanvasLib {
                     play: () => {
                         audio.currentTime = 0;
                         audio.play();
+                        return {
+                            then: (callback) => {
+                                audio.onended = callback;
+                            }
+                        };
                     },
                     pause: () => {
                         audio.pause();
@@ -546,7 +613,13 @@ class HydraCanvasLib {
                         if (l && l instanceof Audio) {
                             audio = l;
                         }
-                    }
+                    },
+                    onEnd: (callback) => {
+                        audio.onended = () => {
+                            callback();
+                        }
+                    },
+                    src
                 };
             }
         };
@@ -567,43 +640,140 @@ class HydraCanvasLib {
                         },
                         isMouseTouching(sprite, canvas, mouseX, mouseY) {
                             const rect = canvas.getBoundingClientRect();
-                            const canvasX = mouseX - rect.left;
-                            const canvasY = mouseY - rect.top;
+                            var canvasX = mouseX - rect.left;
+                            var canvasY = mouseY - rect.top;
+
+                            if (thiz.props.enableExperimentalDPR) {
+                                const dpr = window.devicePixelRatio || 1;
+                                canvasX = canvasX / dpr;
+                                canvasY = canvasY / dpr;
+                            }
+
                             const spriteLeft = sprite.x + this.offset.x;
                             const spriteRight = spriteLeft + this.width;
                             const spriteTop = sprite.y + this.offset.y;
                             const spriteBottom = spriteTop + this.height;
-                            return (
+
+                            const touching = (
                                 canvasX >= spriteLeft &&
                                 canvasX <= spriteRight &&
                                 canvasY >= spriteTop &&
                                 canvasY <= spriteBottom
                             );
+
+                            return touching;
+                        }
+                    };
+                },
+                makeCircleCollider(radius, offset = { x: 0, y: 0 }) {
+                    return {
+                        type: 'circle',
+                        radius: radius, offset: offset,
+                        keepInBounds(boundGap, canvas, sprite) {
+                            if (sprite.x + this.radius > canvas.width + boundGap) sprite.x = canvas.width - this.radius + boundGap;
+                            if (sprite.y + this.radius > canvas.height + boundGap) sprite.y = canvas.height - this.radius + boundGap;
+                            if (sprite.x - this.radius < -boundGap) sprite.x = -this.radius - boundGap;
+                            if (sprite.y - this.radius < -boundGap) sprite.y = -this.radius - boundGap;
+                        },
+                        drawGizmos(ctx, sprite, color = "red", width = 1) {
+                            ctx.strokeStyle = color;
+                            ctx.lineWidth = width;
+                            ctx.beginPath();
+                            ctx.arc(sprite.x + this.offset.x, sprite.y + this.offset.y, this.radius, 0, 2 * Math.PI);
+                            ctx.stroke();
+                        },
+                        isMouseTouching(sprite, canvas, mouseX, mouseY) {
+                            const rect = canvas.getBoundingClientRect();
+                            const canvasX = mouseX - rect.left;
+                            const canvasY = mouseY - rect.top;
+                            const spriteCenterX = sprite.x + this.offset.x;
+                            const spriteCenterY = sprite.y + this.offset.y;
+                            const distance = Math.sqrt(
+                                Math.pow(canvasX - spriteCenterX, 2) +
+                                Math.pow(canvasY - spriteCenterY, 2)
+                            );
+                            return distance <= this.radius;
                         }
                     };
                 },
                 checkCollision(sprite1, sprite2) {
-                    switch(`${sprite1.collider.type||'none'}-${sprite2.collider.type||'none'}`) {
+                    if (sprite1.collider == null || sprite2.collider == null) {
+                        return false;
+                    }
+                    switch (`${sprite1.collider.type || 'none'}-${sprite2.collider.type || 'none'}`) {
                         case 'square-square':
-                            const s1x = sprite1.x + sprite1.collider.offset.x;
-                            const s1y = sprite1.y + sprite1.collider.offset.y;
-                            const s1w = sprite1.collider.width;
-                            const s1h = sprite1.collider.height;
-                            const s2x = sprite2.x + sprite2.collider.offset.x;
-                            const s2y = sprite2.y + sprite2.collider.offset.y;
-                            const s2w = sprite2.collider.width;
-                            const s2h = sprite2.collider.height;
+                            var s1x = sprite1.x + sprite1.collider.offset.x;
+                            var s1y = sprite1.y + sprite1.collider.offset.y;
+                            var s1w = sprite1.collider.width;
+                            var s1h = sprite1.collider.height;
+                            var s2x = sprite2.x + sprite2.collider.offset.x;
+                            var s2y = sprite2.y + sprite2.collider.offset.y;
+                            var s2w = sprite2.collider.width;
+                            var s2h = sprite2.collider.height;
                             return s1x < s2x + s2w &&
                                 s1x + s1w > s2x &&
                                 s1y < s2y + s2h &&
                                 s1y + s1h > s2y;
-                                break;
-                        case 'tilemap-square':
-                            return sprite1.collider.checkCollision(sprite2);
                             break;
                         case 'square-tilemap':
-                            return sprite2.collider.checkCollision(sprite1);
+                        case 'tilemap-square':
+                            var tilemap = sprite1.collider.type === 'tilemap' ? sprite1 : sprite2;
+                            var sprite = sprite1.collider.type === 'tilemap' ? sprite2 : sprite1
+                            return sprite.collider.checkCollision(tilemap);
                             break;
+                        case 'circle-circle':
+                            var dx = (sprite1.x + sprite1.collider.offset.x) - (sprite2.x + sprite2.collider.offset.x);
+                            var dy = (sprite1.y + sprite1.collider.offset.y) - (sprite2.y + sprite2.collider.offset.y);
+                            var distance = Math.sqrt(dx * dx + dy * dy);
+                            return distance < (sprite1.collider.radius + sprite2.collider.radius);
+                            break;
+                        case 'circle-square':
+                        case 'square-circle':
+                            var circle = sprite1.collider.type === 'circle' ? sprite1 : sprite2;
+                            var square = sprite1.collider.type === 'circle' ? sprite2 : sprite1;
+                            var circleX = circle.x + circle.collider.offset.x;
+                            var circleY = circle.y + circle.collider.offset.y;
+                            var squareX = square.x + square.collider.offset.x;
+                            var squareY = square.y + square.collider.offset.y;
+                            var squareWidth = square.collider.width;
+                            var squareHeight = square.collider.height;
+                            var closestX = Math.max(squareX, Math.min(circleX, squareX + squareWidth));
+                            var closestY = Math.max(squareY, Math.min(circleY, squareY + squareHeight));
+                            var dx = circleX - closestX;
+                            var dy = circleY - closestY;
+                            return (dx * dx + dy * dy) < (circle.collider.radius * circle.collider.radius);
+                            break;
+                        case 'circle-tilemap':
+                        case 'tilemap-circle':
+                            var tilemap = sprite1.collider.type === 'tilemap' ? sprite1 : sprite2;
+                            var circle = sprite1.collider.type === 'tilemap' ? sprite2 : sprite1;
+                            if (tilemap.collider.type !== 'tilemap') {
+                                throw new Error("Cannot check tilemap to circle collision");
+                            }
+                            var tileSize = tilemap.tileSize;
+                            var tilemapOffsetX = tilemap.offset.x;
+                            var tilemapOffsetY = tilemap.offset.y;
+                            var circleX = circle.x + circle.collider.offset.x;
+                            var circleY = circle.y + circle.collider.offset.y;
+                            var circleRadius = circle.collider.radius;
+                            for (let i = 0; i < tilemap.map.length; i++) {
+                                for (let j = 0; j < tilemap.map[i].length; j++) {
+                                    const tile = tilemap.map[i][j];
+                                    if (tile == null) continue;
+                                    const tileX = tilemapOffsetX + j * tileSize;
+                                    const tileY = tilemapOffsetY + i * tileSize;
+                                    const tileWidth = tileSize;
+                                    const tileHeight = tileSize;
+                                    const closestX = Math.max(tileX, Math.min(circleX, tileX + tileWidth));
+                                    const closestY = Math.max(tileY, Math.min(circleY, tileY + tileHeight));
+                                    const dx = circleX - closestX;
+                                    const dy = circleY - closestY;
+                                    if ((dx * dx + dy * dy) < (circleRadius * circleRadius)) {
+                                        return true; // Collision detected
+                                    }
+                                }
+                            }
+                            return false; // No collision detected
                         case 'tilemap-tilemap':
                             throw new Error("Cannot check tilemap to tilemap collision");
                             break;
@@ -642,37 +812,52 @@ class HydraCanvasLib {
                 });
             }
         };
-        this.listen = {
-            keys: {},
-            keyDowns: {},
-            tickers: [],
-            mouse: { x: 0, y: 0 },
-            isKey(key) {
-                return !!this.keys[key];
-            },
-            isManyKeys(...keys) {
-                return keys.every(key => this.isKey(key));
-            },
-            onKeyDown(key) {
-                return !!this.keyDowns[key];
-            },
-            addTicker(callback) {
-                var uuid = Math.random().toString(36).substring(7);
-                this.tickers.push({ uuid, callback });
-                return uuid;
-            },
-            removeTicker(uuid) {
-                const index = this.tickers.findIndex(t => t.uuid === uuid);
-                if (index !== -1) {
-                    this.tickers.splice(index, 1);
-                    return true;
+        this.listen = (function (thiz) {
+            return {
+                keys: {},
+                keyDowns: {},
+                tickers: [],
+                mouse: { x: 0, y: 0 },
+                mouseScreen() {
+                    const rect = thiz.canvas.getBoundingClientRect();
+                    let mouseX = this.mouse.x - rect.left;
+                    let mouseY = this.mouse.y - rect.top;
+
+                    if (thiz.props.enableExperimentalDPR) {
+                        const dpr = window.devicePixelRatio || 1;
+                        mouseX /= dpr;
+                        mouseY /= dpr;
+                    }
+
+                    return { x: mouseX, y: mouseY };
+                },
+                isKey(key) {
+                    return !!this.keys[key];
+                },
+                isManyKeys(...keys) {
+                    return keys.every(key => this.isKey(key));
+                },
+                onKeyDown(key) {
+                    return !!this.keyDowns[key];
+                },
+                addTicker(callback) {
+                    var uuid = Math.random().toString(36).substring(7);
+                    this.tickers.push({ uuid, callback });
+                    return uuid;
+                },
+                removeTicker(uuid) {
+                    const index = this.tickers.findIndex(t => t.uuid === uuid);
+                    if (index !== -1) {
+                        this.tickers.splice(index, 1);
+                        return true;
+                    }
+                    return false;
+                },
+                isMouseDown() {
+                    return this.keys['Mouse1'];
                 }
-                return false;
-            },
-            isMouseDown() {
-                return this.keys['Mouse1'];
-            }
-        };
+            };
+        })(this);
         this.world = {
             effects: {
                 vingette: {
@@ -711,10 +896,14 @@ class HydraCanvasLib {
                     }
                     // make fake canvas
                     const offscreenCanvas = document.createElement('canvas');
+                    const dpr = props.enableExperimentalDPR ? (window.devicePixelRatio || 1) : 1;
                     offscreenCanvas.width = canvas.width;
                     offscreenCanvas.height = canvas.height;
                     const offscreenCtx = offscreenCanvas.getContext('2d');
-                    offscreenCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                    if (props.enableExperimentalDPR) {
+                        offscreenCtx.scale(dpr, dpr);
+                    }
+                    offscreenCtx.drawImage(canvas, 0, 0, canvas.width / dpr, canvas.height / dpr);
 
                     // make sure light areas are isolated (using threshold)
                     const imageData = offscreenCtx.getImageData(0, 0, canvas.width, canvas.height);
@@ -738,12 +927,12 @@ class HydraCanvasLib {
 
                     // apply a blur filter for that bloom effect.
                     offscreenCtx.filter = `blur(${this.effects.bloom.radius}px)`;
-                    offscreenCtx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+                    offscreenCtx.drawImage(offscreenCanvas, 0, 0, canvas.width / dpr, canvas.height / dpr);
 
                     // draw the blurred canvas back to main canvas with a lighter composite operation
                     ctx.save();
                     ctx.globalCompositeOperation = 'lighter';
-                    ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(offscreenCanvas, 0, 0, canvas.width / dpr, canvas.height / dpr);
                     ctx.restore();
                 }
             },
@@ -806,7 +995,6 @@ class HydraCanvasLib {
     _drawFrame() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.world.render(this.canvas);
-        // sort by zIndex
         this.sprites.sprites.sort((a, b) => a.zIndex - b.zIndex);
         for (const sprite of this.sprites.sprites) {
             if (sprite.renderer.shouldRender()) {

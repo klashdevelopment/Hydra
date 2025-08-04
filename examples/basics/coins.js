@@ -22,7 +22,7 @@ function createCoin() {
         SimpleRenderers.circle(25, '#f1c40f'),
         SimpleRenderers.text('C', 40, 'KlashLegacy', 'black', {x: -14, y: 14})
     ));
-    coin.collider = lib.collision.makeSquareCollider(40, 40, {x: -20, y: -20});
+    coin.collider = lib.collision.makeCircleCollider(25, {x: 0, y: 0});
     coin.props.isCoin = true;
     return coin;
 }
@@ -45,7 +45,7 @@ lib.listen.addTicker((deltaTime) => {
     if (lib.listen.isKey('w')) lib.sprites.moveBy(player, 0, -1 * deltaTime);
     if (lib.listen.isKey('a')) lib.sprites.moveBy(player, -1 * deltaTime, 0);
     if (lib.listen.isKey('s')) lib.sprites.moveBy(player, 0, 1 * deltaTime);
-    if (lib.listen.isKey('d')) lib.sprites.moveBy(player, 1 * deltaTime, 0);
+    if (lib.listen.isKey('d')) lib.sprites.moveBy(player,1 * deltaTime, 0);
 
     if (lib.collision.checkCollision(player, coin)) {
         sound.play();

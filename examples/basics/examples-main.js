@@ -1,5 +1,6 @@
 var _exm_lib = new HydraCanvasLib('game', { enableExperimentalDPR: false, canvasHeight: 600, canvasWidth: 800 });
 var _exm_games = ['DOCUMENTATION', 'PIXEL_ART_EDITOR', 'coin-game', 'coins', 'dash', 'basic-3d', 'pixel-character', 'ultrawide', 'simple', 'snake', 'shapes', 'space-dodge', 'space-invaders', 'tilemap', 'geometry-dash', 'brick-breaker', 'shooty-thingy', 'data', 'asteroid-ai'];
+var _exm_adv = ['portal']
 
 var _exm_interImport = _exm_lib.experiments.importCSS("https://rsms.me/inter/inter.css");
 
@@ -10,7 +11,8 @@ function _exm_loadGame(_exm_game) {
     document.querySelector('#example-script').remove();
     // load new game
     var _exm_scr = document.createElement('script');
-    _exm_scr.src = `./examples/${_exm_game}.js`;
+    _exm_scr.type = 'module';
+    _exm_scr.src = `./examples/${_exm_games.includes(_exm_game)?'basics':_exm_game}/${_exm_game}.js`;
     document.body.appendChild(_exm_scr);
 }
 
@@ -23,7 +25,7 @@ function _exm_makeGameRenderer(_exm_game, _exm_hover) {
     );
 }
 
-var _exm_sprites = _exm_games.map((_exm_game, _exm_i) => {
+var _exm_sprites = [..._exm_adv, ..._exm_games].map((_exm_game, _exm_i) => {
     return {
         game: _exm_game,
         renderer: _exm_makeGameRenderer(_exm_game, '#00000020'),

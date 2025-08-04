@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hydra Game</title>
+    <title>Hydra GE Examples</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
         body {
             background-color: #111;
             margin: 0;
@@ -17,11 +18,12 @@
             border: 3px solid #ffffff20;
         }
     </style>
+    <link rel="shortcut icon" href="hydra.webp" type="image/webp">
 </head>
 <body>
     <canvas id="game"></canvas>
 
-    <script src="hydra.js"></script>
-    <script id="example-script" src="examples/examples-main.js"></script>
+    <script src="src/hydra.js"></script>
+    <script id="example-script" type="module" src="examples/basics/examples-main.js"></script>
 </body>
 </html>

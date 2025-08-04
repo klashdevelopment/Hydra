@@ -33,11 +33,12 @@ declare class SimpleRenderers {
     static pixelMap(width: number, height: number, gridWidth: number, gridHeight: number, map: string[], colors: any[], offset?: Offset): HydraSpriteRenderer;
     static smileyFace(radius: number, color: string, pupilColor?: string, offset?: Offset): HydraSpriteRenderer;
     static combination(...renderers: HydraSpriteRenderer[]): HydraSpriteRenderer;
+    static combinationWithOffset(offset: Offset, ...renderers: HydraSpriteRenderer[]): HydraSpriteRenderer;
     static vertex(color?: string, size?: number, offset?: Offset): HydraSpriteRenderer;
     static line(x2: number, y2: number, color?: string, width?: number, offset?: Offset): HydraSpriteRenderer;
     static polygon(vertices: { x: number; y: number }[], color?: string, offset?: Offset): HydraSpriteRenderer;
     static star(spikes: number, outerRadius: number, innerRadius: number, color?: string, offset?: Offset): HydraSpriteRenderer;
-    static text(text: string | (() => string), fontSize: number, fontName: string, color: string, offset?: Offset, weight?: string): HydraSpriteRenderer;
+    static text(text: string | (() => string), fontSize: number, fontName: string, color: string, offset?: Offset, weight?: string, letterSpacing?: string): HydraSpriteRenderer;
 }
 
 declare class SimpleCheats {
@@ -137,8 +138,18 @@ interface TilemapCollider {
     keepInBounds: (boundGap: number, canvas: HTMLCanvasElement, sprite: HydraSprite) => void;
 }
 
+interface CircleCollider {
+    type: 'circle';
+    radius: number;
+    offset: Offset;
+    keepInBounds: (boundGap: number, canvas: HTMLCanvasElement, sprite: HydraSprite) => void;
+    drawGizmos: (ctx: CanvasRenderingContext2D, sprite: HydraSprite, color?: string, width?: number) => void;
+    isMouseTouching: (sprite: HydraSprite, canvas: HTMLCanvasElement, mouseX: number, mouseY: number) => boolean;
+}
+
 interface Collision {
     makeSquareCollider: (initalWidth: number, initialHeight: number, initialOffset?: Offset) => SquareCollider;
+    makeCircleCollider: (radius: number, initialOffset?: Offset) => CircleCollider;
     checkCollision: (sprite1: HydraSprite, sprite2: HydraSprite) => boolean;
     isMouseTouching: (sprite: HydraSprite) => boolean;
 }
@@ -162,6 +173,7 @@ interface Listen {
     addTicker: (callback: (deltaTime: number) => void) => string;
     removeTicker: (uuid: string) => boolean;
     isMouseDown: () => boolean;
+    mouseScreen: () => { x: number; y: number };
 }
 
 interface VingetteEffect {
