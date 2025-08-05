@@ -68,7 +68,8 @@ The `SimpleRenderers` object defines static functions to allow easy creation of 
 | `image` | url, width, height, offset? | Image |
 | `pixelMap` | width, height, gridWidth, gridHeight, map, colors, offset? | Pixel art using grid of strings and color map |
 | `smileyFace` | radius, color, pupilColor?, offset? | Arc & Circles |
-| `combination` | ...renderers | Combination |
+| `combination` | ...renderers | Render multiple in order |
+| `combinationWithOffset` | offset, ...renderers | Rotate/offset an entire sprite |
 | `text` | text, fontSize, fontName, color, weight?, offset? | Text (can have a function) |
 | `vertex` | color?, size?, offset? | Single point |
 | `line` | x1, y1, x2, y2, color?, width?, offset? | Single line |

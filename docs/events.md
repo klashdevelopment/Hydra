@@ -18,6 +18,12 @@ lib.listen.mouse.x
 lib.listen.mouse.y
 ```
 
+## Mouse position in World space
+```js
+lib.listen.mouseScreen().x
+lib.listen.mouseScreen().y
+```
+
 ## Mouse presses
 Use the simple `isMouseDown` api or use the key press api for `Mouse1`:
 ```js

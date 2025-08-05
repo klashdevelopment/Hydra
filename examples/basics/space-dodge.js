@@ -70,7 +70,7 @@ lib.world.effects.bloom.intensity = 0.6;
 
 // Create sound effect for power-up collection
 //              Non-AI: I changed this to coin.mp3 from powerUp.mp3
-const powerUpSound = lib.sounds.createSFX('examples/sfx/coin.mp3');
+const powerUpSound = lib.sounds.createSFX('examples/assets/sounds/coin.mp3');
 
 // Create restart button variable
 var restartButton = null;

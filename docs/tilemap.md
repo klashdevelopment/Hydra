@@ -41,7 +41,7 @@ Each outer array represents a row of the tilemap, while each inner array has two
 Once this is made, put it on a sprite:
 ```js
 const tileSprite = lib.sprites.createNew(0, 0, tilemap.renderer);
-tileSprite.collider = tilemap.collider;
+tileSprite.collider = tilemap.collider; // Tilemaps come with a unique collider of 'tilemap' type.
 ```
 
 ### Tilemap collision

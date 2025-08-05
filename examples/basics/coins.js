@@ -38,7 +38,7 @@ var interImport = lib.experiments.importCSS("https://legacy.klash.dev/legacy.css
 // set background color to a dark grey
 lib.world.setBackgroundColor('#9af');
 
-const sound = lib.sounds.createSFX('examples/sfx/coin.mp3');
+const sound = lib.sounds.createSFX('examples/assets/sounds/coin.mp3');
 
 // advanced player movement using deltaTime to ensure consistent speed across different framerates
 lib.listen.addTicker((deltaTime) => {

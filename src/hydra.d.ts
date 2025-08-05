@@ -104,7 +104,7 @@ interface TilesetManager {
 }
 
 interface SFX {
-    play: () => void;
+    play: () => {then: (callback: () => void) => void};
     pause: () => void;
     stop: () => void;
     setVolume: (volume: number) => void;
@@ -115,6 +115,7 @@ interface SFX {
     isPaused: () => boolean;
     isEnded: () => boolean;
     editAudio: (callback: (audio: HTMLAudioElement) => HTMLAudioElement | void) => void;
+    src: string;
 }
 
 interface Sounds {

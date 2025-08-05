@@ -1,6 +1,8 @@
 # Storage (Data)
 
-Create a storage object:
+Storage allows for saving game data like player stats across reloads.
+
+Create a storage object using a key for your game:
 ```js
 var storage = lib.data.createStorage('example-key')
 ```

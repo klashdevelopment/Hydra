@@ -1,5 +1,5 @@
 // Created 100% by Claude AI
-// With only the .d.ts (types) file!
+// With only the .d.ts (types) file
 
 // Initialize the Hydra Canvas Library
 const hydra = new HydraCanvasLib('game', {

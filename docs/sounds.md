@@ -20,6 +20,11 @@ sound.setMuted(muted)
 sound.isPlaying()
 sound.isPaused()
 sound.isEnded()
+
+// Do something when the sound is done
+sound.play().then(() => {
+    // ...
+})
 ```
 
 If our APIs arent enough, interface with the `Audio` yourself:

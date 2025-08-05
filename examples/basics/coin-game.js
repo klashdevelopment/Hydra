@@ -47,7 +47,7 @@ lib.world.effects.bloom.enabled = true;
 lib.world.effects.bloom.threshold = 0.78;
 
 // SOUNDS - create sound effect for later use
-const sound = lib.sounds.createSFX('examples/sfx/coin.mp3');
+const sound = lib.sounds.createSFX('examples/assets/sounds/coin.mp3');
 
 // SPRITES - text sprite with function for live updatable text
 var text = lib.sprites.createNew(20,30, SimpleRenderers.text(()=>{
