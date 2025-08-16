@@ -17,7 +17,7 @@ lib.world.setBackgroundColor('#aaa');
 
 const start = `examples/assets/sounds/`;
 const soundObjects = Object.keys(sounds).map((name) => {
-    var soundURL = `${start}${sounds[name]}`;
+    var soundURL = sounds[name].includes('.') ? `${start}${sounds[name]}` : `${start}sfx.mp3?stop`;
     return lib.sounds.createSFX(soundURL);
 })
 
@@ -50,7 +50,7 @@ var sprites = [
 lib.listen.addTicker(() => {
     sprites.forEach((s) => {
         if(lib.listen.isMouseDown() && lib.collision.isMouseTouching(s)) {
-            if(s.props.sound.src === 'examples/assets/sounds/stop') {
+            if(s.props.sound.src === 'examples/assets/sounds/sfx.mp3?stop') {
                 soundObjects.forEach((so) => so.stop());
             } else {
                 s.props.sound.play().then(() => {

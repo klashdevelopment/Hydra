@@ -364,7 +364,7 @@ class HydraCanvasLib {
                 }
             },
             getScreenCenter: () => {
-                const dpr = window.devicePixelRatio || 1;
+                const dpr = (this.props.enableExperimentalDPR ? window.devicePixelRatio : 0.5) || 1;
                 return { x: this.canvas.width / (2 * dpr), y: this.canvas.height / (2 * dpr) };
             },
             getScreenSize: () => {
@@ -719,7 +719,31 @@ class HydraCanvasLib {
                         case 'tilemap-square':
                             var tilemap = sprite1.collider.type === 'tilemap' ? sprite1 : sprite2;
                             var sprite = sprite1.collider.type === 'tilemap' ? sprite2 : sprite1
-                            return sprite.collider.checkCollision(tilemap);
+                            if (tilemap.collider.type !== 'tilemap') {
+                                throw new Error("Cannot check tilemap to square collision");
+                            }
+                            var tileSize = tilemap.tileSize;
+                            var spriteX = sprite.x + sprite.collider.offset.x;
+                            var spriteY = sprite.y + sprite.collider.offset.y;
+                            var spriteWidth = sprite.collider.width;
+                            var spriteHeight = sprite.collider.height;
+                            for (let i = 0; i < tilemap.map.length; i++) {
+                                for (let j = 0; j < tilemap.map[i].length; j++) {
+                                    const tile = tilemap.map[i][j];
+                                    if (tile == null) continue;
+                                    const tileX = j * tileSize;
+                                    const tileY = i * tileSize;
+                                    const tileWidth = tileSize;
+                                    const tileHeight = tileSize;
+                                    if (spriteX < tileX + tileWidth &&
+                                        spriteX + spriteWidth > tileX &&
+                                        spriteY < tileY + tileHeight &&
+                                        spriteY + spriteHeight > tileY) {
+                                        return true; // Collision detected
+                                    }
+                                }
+                            }
+                            return false; // No collision detected
                             break;
                         case 'circle-circle':
                             var dx = (sprite1.x + sprite1.collider.offset.x) - (sprite2.x + sprite2.collider.offset.x);
@@ -838,7 +862,11 @@ class HydraCanvasLib {
                     return keys.every(key => this.isKey(key));
                 },
                 onKeyDown(key) {
-                    return !!this.keyDowns[key];
+                    if (this.keyDowns[key]) {
+                        this.keyDowns[key] = false;
+                        return true;
+                    }
+                    return false;
                 },
                 addTicker(callback) {
                     var uuid = Math.random().toString(36).substring(7);
@@ -970,22 +998,28 @@ class HydraCanvasLib {
         }
 
         window.addEventListener('keydown', (e) => {
-            this.listen.keys[e.key] = true;
-            if (!this.listen.keyDowns[e.key]) {
+            if(this.shutoff) return;
+            if (!this.listen.keys[e.key]) {
                 this.listen.keyDowns[e.key] = true;
             }
+            this.listen.keys[e.key] = true;
         });
         window.addEventListener('keyup', (e) => {
+            if(this.shutoff) return;
             this.listen.keys[e.key] = false;
+            this.listen.keyDowns[e.key] = false;
         });
         window.addEventListener('mousedown', (e) => {
+            if(this.shutoff) return;
             this.listen.keys['Mouse1'] = true;
         });
         window.addEventListener('mousemove', (e) => {
+            if(this.shutoff) return;
             this.listen.mouse.x = e.clientX;
             this.listen.mouse.y = e.clientY;
         });
         window.addEventListener('mouseup', (e) => {
+            if(this.shutoff) return;
             this.listen.keys['Mouse1'] = false;
         });
 
@@ -1012,7 +1046,6 @@ class HydraCanvasLib {
             const deltaTime = time - lastTime;
             if (deltaTime >= interval) {
                 lastTime = time;
-                this.listen.keyDowns = {};
                 this._drawFrame();
                 for (const ticker of this.listen.tickers) {
                     ticker.callback(deltaTime);

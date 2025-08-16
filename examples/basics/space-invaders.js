@@ -56,7 +56,7 @@ hydra.listen.addTicker((deltaTime) => {
     if (hydra.listen.isKey('ArrowLeft') && player.x > 0) {
         hydra.sprites.moveBy(player, -5, 0);
     }
-    if (hydra.listen.isKey('ArrowRight') && player.x < hydra.canvas.width - 50) {
+    if (hydra.listen.isKey('ArrowRight') && player.x < hydra.utility.getScreenSize().width - 50) {
         hydra.sprites.moveBy(player, 5, 0);
     }
     
@@ -110,12 +110,12 @@ hydra.listen.addTicker((deltaTime) => {
     // Change direction if an enemy hits the edge
     const leftMostEnemy = Math.min(...enemies.map(e => e.x));
     const rightMostEnemy = Math.max(...enemies.map(e => e.x));
-    if (leftMostEnemy <= 0 || rightMostEnemy >= hydra.canvas.width - 40) {
+    if (leftMostEnemy <= 0 || rightMostEnemy >= hydra.utility.getScreenSize().width - 40) {
         enemyDirection *= -1;
         for (const enemy of enemies) {
             hydra.sprites.moveBy(enemy, 0, 20);
             // Game over if enemies reach the bottom
-            if (enemy.y + enemy.collider.height >= hydra.canvas.height) {
+            if (enemy.y + enemy.collider.height >= hydra.utility.getScreenSize().height) {
                 gameOver = true;
                 alert('Game Over!');
                 break;
