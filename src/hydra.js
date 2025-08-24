@@ -296,6 +296,7 @@ class SimpleRenderers {
         }, { text, fontSize, fontName, color, offset, letterSpacing, weight });
     }
 }
+
 class SimpleCheats {
     static hydraDebug(lib) {
         lib.sprites.createNew(20, 40, SimpleRenderers.text(`Running on Hydra v${window.hydraLibVersion}`, 20, 'Arial', '#ddd')
@@ -684,8 +685,15 @@ class HydraCanvasLib {
                         },
                         isMouseTouching(sprite, canvas, mouseX, mouseY) {
                             const rect = canvas.getBoundingClientRect();
-                            const canvasX = mouseX - rect.left;
-                            const canvasY = mouseY - rect.top;
+                            let canvasX = mouseX - rect.left;
+                            let canvasY = mouseY - rect.top;
+
+                            if (window.devicePixelRatio && thiz.props.enableExperimentalDPR) {
+                                const dpr = window.devicePixelRatio;
+                                canvasX /= dpr;
+                                canvasY /= dpr;
+                            }
+
                             const spriteCenterX = sprite.x + this.offset.x;
                             const spriteCenterY = sprite.y + this.offset.y;
                             const distance = Math.sqrt(

@@ -22,7 +22,7 @@ const soundObjects = Object.keys(sounds).map((name) => {
 })
 
 function createSoundSprite(x, soundObject, subtext = '') {
-    var name = Object.keys(sounds).find(key => sounds[key] === soundObject.src.substr(start.length));
+    var name = Object.keys(sounds).find(key => soundObject.src.endsWith(sounds[key]));
     var nameWidth = lib.utility.getStringWidth(name, 22, 'Inter');
     var subtextWidths = subtext.split('\n').map(line => lib.utility.getStringWidth(line, 14, 'Inter'));
     var s = lib.sprites.createNew(x, center.y-25, SimpleRenderers.combination(
@@ -50,15 +50,18 @@ var sprites = [
 lib.listen.addTicker(() => {
     sprites.forEach((s) => {
         if(lib.listen.isMouseDown() && lib.collision.isMouseTouching(s)) {
+            console.log(`Clicked on sound: ${s.props.sound.src}`);
             if(s.props.sound.src === 'examples/assets/sounds/sfx.mp3?stop') {
                 soundObjects.forEach((so) => so.stop());
             } else {
                 s.props.sound.play().then(() => {
                     console.log(`${s.props.sound.src} finished playing`);
-                });
+                })
             }
         }
     });
+
+    sprites.forEach(s => lib.utility.drawColliderGizmos(s));
 })
 
 lib.loop(30);
