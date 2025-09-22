@@ -138,6 +138,17 @@ class SimpleRenderers {
         }, { width, height, spikePoint, color, offset });
     }
 
+    static custom(drawFunction, params = {}, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
+        return new HydraSpriteRenderer((ctx, sprite, p) => {
+            ctx.save();
+            ctx.translate(sprite.x + p.offset.x, sprite.y + p.offset.y);
+            if (p.offset.rotation) { ctx.rotate(p.offset.rotation * Math.PI / 180); }
+            ctx.filter = (p.offset && p.offset.filter) ? p.offset.filter : 'none';
+            drawFunction(ctx, sprite, p);
+            ctx.restore();
+        }, { ...params, offset });
+    }
+
     static pixelMap(width, height, gridWidth, gridHeight, map, colors, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
             ctx.save();
