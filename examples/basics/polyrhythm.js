@@ -14,8 +14,10 @@ window.addEventListener('resize', () => {
     updateBackgroundImage();
 });
 
+if(!location.hostname.includes('githack')) {
 lib.world.effects.bloom.enabled = true;
 lib.world.effects.bloom.intensity = 0.5;
+}
 
 const backgroundImage = new Image();
 backgroundImage.src = 'examples/assets/nature.jpg';
