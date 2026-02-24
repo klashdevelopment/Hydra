@@ -13,14 +13,14 @@ Add a script to Hydra.js from self-hosting or a CDN:
 - jsDelivr (Full) - `https://cdn.jsdelivr.net/npm/@klashdevelopment/hydra/src/hydra.js`
 
 **Github CDN** - More automatic builds
-- Pushly - `https://raw.githack.com/klashdevelopment/Hydra/main/hydra.js`
-- Nightly - `https://rawcdn.githack.com/klashdevelopment/Hydra/main/hydra.js`
+- Snapshot - `https://raw.githack.com/klashdevelopment/Hydra/main/src/hydra.js`
+- Nightly - `https://rawcdn.githack.com/klashdevelopment/Hydra/main/src/hydra.js`
 
 ```html
 <script src="hydra.js"></script>
 ```
 
-After this, create an instance of hydra, supplying a **HTML id to a canvas**:
+After this, create an instance of hydra, supplying an **HTML id to a canvas**:
 ```js
 // Uses the element <canvas id="game">
 const lib = new HydraCanvasLib('game');
