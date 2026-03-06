@@ -39,6 +39,7 @@ declare class SimpleRenderers {
     static polygon(vertices: { x: number; y: number }[], color?: string, offset?: Offset): HydraSpriteRenderer;
     static star(spikes: number, outerRadius: number, innerRadius: number, color?: string, offset?: Offset): HydraSpriteRenderer;
     static text(text: string | (() => string), fontSize: number, fontName: string, color: string, offset?: Offset, weight?: string, letterSpacing?: string): HydraSpriteRenderer;
+    static custom(renderFunc: (ctx: CanvasRenderingContext2D, sprite: HydraSprite, params: any) => void, params?: any, offset?: Offset): HydraSpriteRenderer;
 }
 
 declare class SimpleCheats {

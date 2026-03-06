@@ -56,6 +56,7 @@ window.invertColor = function (hex) {
         ? '#000000'
         : '#FFFFFF';
 };
+
 class SimpleRenderers {
     static rectangle(width, height, color, offset = { x: 0, y: 0, rotation: 0, filter: 'none' }) {
         return new HydraSpriteRenderer((ctx, sprite, params) => {
