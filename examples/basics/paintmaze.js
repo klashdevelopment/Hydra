@@ -159,14 +159,21 @@ function renderer(col) {
 function fixMap(map) {
     var data = map.initialGrid.map(row => row.map(cell => cell === 1 ? 0 : 1));
     data[map.initialY][map.initialX] = 2;
+
+    data = data[0].map((_, colIndex) => data.map(row => row[colIndex]));
+
     return data;
 }
 
-function start() {
+function pickColor() {
     let colors = ['#00c040', '#c00040', '#4040c0', '#c0c000', '#00c0c0', '#c040c0'];
     let color = colors[Math.floor(Math.random() * colors.length)];
-
-    let maze = maps.length > 0 ? fixMap(maps[Math.floor(Math.random() * maps.length)]) : generateMaze(Math.floor(Math.random() * 20), Math.floor(Math.random() * 20));
+    return color;
+}
+function pickMap() {
+    return maps.length > 0 ? fixMap(maps[Math.floor(Math.random() * maps.length)]) : generateMaze(Math.floor(Math.random() * 20), Math.floor(Math.random() * 20));
+}
+function setupMap(maze, color) {
     let mazeSprites = [];
     for (let y = 0; y < maze.length; y++) {
         for (let x = 0; x < maze[y].length; x++) {
@@ -177,28 +184,53 @@ function start() {
             if (maze[y][x] === 2) {
                 sprite = lib.sprites.createNew(x * 20, y * 20, renderer(color));
             }
-            if(!sprite) continue;
+            if (!sprite) continue;
             sprite.props.status = maze[y][x] === 0 ? 'unpainted' : 'painted';
             mazeSprites.push(sprite);
         }
     }
-    console.log(maze, mazeSprites);
+    return mazeSprites;
+}
 
-    const ballX = maze.findIndex(row => row.includes(2));
-    const ballY = maze[ballX].indexOf(2);
-    
-    const ball = lib.sprites.createNew(ballY * 20 + 10, ballX * 20 + 10, SimpleRenderers.combination(
+function getBallXY(maze) {
+    let ballX = maze.findIndex(row => row.includes(2));
+    let ballY = maze[ballX].indexOf(2);
+    return [ballX, ballY];
+}
+
+function makeBall(maze, color) {
+    let ballPos = getBallXY(maze);
+    let ballX = ballPos[0];
+    let ballY = ballPos[1];
+    return lib.sprites.createNew(ballY * 20 + 10, ballX * 20 + 10, SimpleRenderers.combination(
         SimpleRenderers.rectangle(20, 20, color, { x: -10, y: -10 }),
         SimpleRenderers.circle(8, '#fff')
     ));
+}
+
+function start() {
+    let color, maze, mazeSprites, ball, gridX, gridY;
+    function setup() {
+        color = pickColor();
+        maze = pickMap();
+        mazeSprites = setupMap(maze, color);
+        console.log(maze, mazeSprites);
+
+        ball = makeBall(maze, color);
+
+        gridX = (ball.x - 10) / 20;
+        gridY = (ball.y - 10) / 20;
+    }
+    function reset() {
+        mazeSprites.forEach(s => lib.sprites.remove(s));
+        if (ball) lib.sprites.remove(ball);
+    }
+    setup();
 
     lib.world.setBackgroundColor('#21252b');
 
     const TILE = 20;
     const TOTAL_STEPS = 10;
-
-    let gridX = (ball.x - 10) / TILE;
-    let gridY = (ball.y - 10) / TILE;
 
     let currentDir = null;
     let queuedDir = null;
@@ -248,7 +280,11 @@ function start() {
         ball.y = gridY * TILE + 10;
 
         if (mazeSprites.every(s => s.props.status === 'painted')) {
-            location.reload();
+            // win
+            setTimeout(() => {
+                reset();
+                setTimeout(setup, 100);
+            }, 100);
         }
 
         return true;
@@ -279,11 +315,67 @@ function start() {
         movementLoop();
     }
 
+    lib.experiments.importCSS("https://legacy.klash.dev/legacy.css");
+
+    function textR(opacity) {
+        return SimpleRenderers.combination(
+            SimpleRenderers.text('Use WASD, mouse, or arrows to move', 14, "KlashLegacy", "#000000", { filter: `opacity(${opacity / 1}) blur(5px)`, x: 0, y: 0 }),
+            SimpleRenderers.text('Use WASD, mouse, or arrows to move', 14, "KlashLegacy", "#ffffff", { filter: `opacity(${opacity / 1})`, x: 0, y: 0 }),
+            SimpleRenderers.text('Press R to skip level', 14, "KlashLegacy", "#000000", { filter: `opacity(${opacity / 1}) blur(5px)`, x: 0, y: 14 }),
+            SimpleRenderers.text('Press R to skip level', 14, "KlashLegacy", "#ffffff", { filter: `opacity(${opacity / 1})`, x: 0, y: 14 }),
+        );
+    }
+    let text = lib.sprites.createNew(10, 20, textR(1));
+    text.zIndex = 1000;
+
+    let permaText = lib.sprites.createNew(4, 414, SimpleRenderers.text('paintmaze.js | Hydra clone of AMAZE', 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    permaText.zIndex = 1000;
+
+    let tick = 0;
+    let textOpacity = 1;
+
+    let mouseStuff = {};
     lib.listen.addTicker(() => {
+        tick++;
+        if (text && tick > 60) {
+            text.renderer = textR(textOpacity);
+            textOpacity -= 0.04;
+            if (textOpacity < 0) {
+                textOpacity = 0;
+                lib.sprites.remove(text);
+            }
+        }
+
+        if (!ball) return;
+        if (lib.listen.onKeyDown('r')) {
+            reset();
+            setTimeout(setup, 100);
+        }
         if (lib.listen.isKey('w') || lib.listen.isKey('ArrowUp')) queueDirection(0, -1);
         if (lib.listen.isKey('s') || lib.listen.isKey('ArrowDown')) queueDirection(0, 1);
         if (lib.listen.isKey('a') || lib.listen.isKey('ArrowLeft')) queueDirection(-1, 0);
         if (lib.listen.isKey('d') || lib.listen.isKey('ArrowRight')) queueDirection(1, 0);
+
+        let mousePos = lib.listen.mouseScreen();
+        if (lib.listen.isMouseDown()) {
+            if (!mouseStuff.down) {
+                mouseStuff.down = true;
+                mouseStuff.start = mousePos;
+            } else {
+                let dx = mousePos.x - mouseStuff.start.x;
+                let dy = mousePos.y - mouseStuff.start.y;
+                if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        queueDirection(dx > 0 ? 1 : -1, 0);
+                    } else {
+                        queueDirection(0, dy > 0 ? 1 : -1);
+                    }
+                    mouseStuff.start = mousePos;
+                }
+            }
+        } else {
+            mouseStuff.down = false;
+        }
     });
 
     lib.loop(30);
