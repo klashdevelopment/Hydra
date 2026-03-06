@@ -1018,28 +1018,35 @@ class HydraCanvasLib {
         }
 
         window.addEventListener('keydown', (e) => {
-            if(this.shutoff) return;
+            if (this.shutoff) return;
             if (!this.listen.keys[e.key]) {
                 this.listen.keyDowns[e.key] = true;
             }
             this.listen.keys[e.key] = true;
         });
         window.addEventListener('keyup', (e) => {
-            if(this.shutoff) return;
+            if (this.shutoff) return;
             this.listen.keys[e.key] = false;
             this.listen.keyDowns[e.key] = false;
         });
-        window.addEventListener('mousedown', (e) => {
-            if(this.shutoff) return;
+        
+        this.canvas.style.touchAction = 'none';
+
+        window.addEventListener('pointerdown', (e) => {
+            if (this.shutoff) return;
             this.listen.keys['Mouse1'] = true;
-        });
-        window.addEventListener('mousemove', (e) => {
-            if(this.shutoff) return;
             this.listen.mouse.x = e.clientX;
             this.listen.mouse.y = e.clientY;
         });
-        window.addEventListener('mouseup', (e) => {
-            if(this.shutoff) return;
+
+        window.addEventListener('pointermove', (e) => {
+            if (this.shutoff) return;
+            this.listen.mouse.x = e.clientX;
+            this.listen.mouse.y = e.clientY;
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            if (this.shutoff) return;
             this.listen.keys['Mouse1'] = false;
         });
 
