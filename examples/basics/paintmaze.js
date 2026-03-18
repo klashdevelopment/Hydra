@@ -1,3 +1,5 @@
+const FORCE_GITHACK = false; // used in dev
+
 // Paint Maze
 const lib = window.lib = new HydraCanvasLib('game', {
     enableExperimentalDPR: true,
@@ -141,7 +143,7 @@ function generateMaze(w, h) {
 
 let maps = [];
 
-fetch('examples/assets/paintmaze_maps.json')
+fetch((FORCE_GITHACK ? "https://rawcdn.githack.com/klashdevelopment/Hydra/main/" : "") + 'examples/assets/paintmaze_maps.json')
     .then(res => res.json())
     .then(json => {
         maps = json;
@@ -152,8 +154,11 @@ fetch('examples/assets/paintmaze_maps.json')
         start();
     });
 
-function renderer(col) {
-    return SimpleRenderers.rectangle(20, 20, col);
+function renderer(col, extra=[]) {
+    return SimpleRenderers.combination(
+        SimpleRenderers.rectangle(20, 20, col),
+        ...extra
+    );
 }
 
 function fixMap(map) {
@@ -171,7 +176,21 @@ function pickColor() {
     return color;
 }
 function pickMap() {
-    return maps.length > 0 ? fixMap(maps[Math.floor(Math.random() * maps.length)]) : generateMaze(Math.floor(Math.random() * 20), Math.floor(Math.random() * 20));
+    var data = maps.length > 0 ? fixMap(maps[Math.floor(Math.random() * maps.length)]) : generateMaze(Math.floor(Math.random() * 20), Math.floor(Math.random() * 20));
+
+    const coords = [];
+    for (let x = 0; x < data.length; x++) {
+        for (let y = 0; y < data[x].length; y++) {
+            if (data[x][y] === 0) coords.push({ x, y });
+        }
+    }
+
+    if (coords.length > 0 && Math.random() > 0.3) {
+        const randomOne = coords[Math.floor(Math.random() * coords.length)];
+        powerupMap[`${randomOne.x}|${randomOne.y}`] = Object.keys(powerups)[Math.floor(Math.random() * Object.keys(powerups).length)];
+    }
+    
+    return data;
 }
 function setupMap(maze, color) {
     let mazeSprites = [];
@@ -179,7 +198,12 @@ function setupMap(maze, color) {
         for (let x = 0; x < maze[y].length; x++) {
             let sprite;
             if (maze[y][x] === 0) {
-                sprite = lib.sprites.createNew(x * 20, y * 20, renderer('#383e47'));
+                let extra = [];
+                if(powerupMap[`${x}|${y}`] !== undefined) {
+                    extra = powerups[powerupMap[`${x}|${y}`]].rnd;
+                }
+                sprite = lib.sprites.createNew(x * 20, y * 20, renderer('#383e47', extra));
+                if(extra.length>0) sprite.zIndex = 100;
             }
             if (maze[y][x] === 2) {
                 sprite = lib.sprites.createNew(x * 20, y * 20, renderer(color));
@@ -208,9 +232,23 @@ function makeBall(maze, color) {
     ));
 }
 
+let powerups = {
+    '200pts': {
+        rnd: [
+            SimpleRenderers.roundedRectangle(18, 18, 4, "#ffff00", {x: 1, y: 1}),
+            SimpleRenderers.text("200", 10, "Arial", "#000", {x: 1, y: 14})
+        ],
+        pickup: () => {
+            
+        }
+    }
+}
+let powerupMap = {};
+
 function start() {
     let color, maze, mazeSprites, ball, gridX, gridY;
     function setup() {
+        powerupMap = {};
         color = pickColor();
         maze = pickMap();
         mazeSprites = setupMap(maze, color);
@@ -270,6 +308,11 @@ function start() {
             if (tile) {
                 tile.renderer = renderer(color);
                 tile.props.status = 'painted';
+
+                // check x/y for powerup
+                if (powerupMap[`${gridX + dx * i}|${gridY + dy * i}`] !== undefined) {
+                    powerups[(powerupMap[`${gridX + dx * i}|${gridY + dy * i}`])].pickup();
+                }
             }
         }
 
