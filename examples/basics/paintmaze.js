@@ -1,6 +1,6 @@
-const FORCE_GITHACK = false; // used in dev
+const FORCE_GITHACK = true; // used in dev
 
-let score = 0;
+let score = 0, level = 0, highscore = 0;
 
 // Paint Maze
 const lib = window.lib = new HydraCanvasLib('game', {
@@ -9,6 +9,11 @@ const lib = window.lib = new HydraCanvasLib('game', {
     canvasWidth: 500
 });
 
+const store = lib.data.createStorage('paintmaze', {
+    activeScore: 0,
+    activeLevel: 0,
+    highscore: 0
+});
 
 function generateMaze(w, h) {
     const ri = (n) => Math.floor(Math.random() * n);
@@ -336,6 +341,7 @@ function start() {
             setTimeout(() => {
                 reset();
                 score += mapValue;
+                level++;
                 setTimeout(setup, 100);
             }, 100);
         }
@@ -388,16 +394,29 @@ function start() {
     permaText2.zIndex = 1000;
 
     const scoreTextVal = () => {
-        return `${score} pts`;
+        return `${score.toFixed(1)} pts`;
     };
-    let scoreText = lib.sprites.createNew(490 - (lib.utility.getStringWidth("10000pts", 14, "KlashLegacy")), 20, SimpleRenderers.text(scoreTextVal, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    let scoreText = lib.sprites.createNew(0, 20, SimpleRenderers.text(scoreTextVal, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
     scoreText.zIndex = 1000;
+    const levelTextVal = () => {
+        return `Lvl ${level}`;
+    };
+    let levelText = lib.sprites.createNew(0, 34, SimpleRenderers.text(levelTextVal, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    levelText.zIndex = 1000;
+
+    function calcTextPos() {
+        levelText.x = 490 - (lib.utility.getStringWidth(levelTextVal(), 14, "KlashLegacy"));
+        scoreText.x = 490 - (lib.utility.getStringWidth(scoreTextVal(), 14, "KlashLegacy"));
+    }
+    calcTextPos();
 
     let tick = 0;
     let textOpacity = 1;
 
     let mouseStuff = {};
     lib.listen.addTicker(() => {
+        calcTextPos();
+
         tick++;
         if (text && tick > 60) {
             text.renderer = textR(textOpacity);
