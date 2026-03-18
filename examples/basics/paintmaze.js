@@ -312,6 +312,7 @@ function start() {
                 // check x/y for powerup
                 if (powerupMap[`${gridX + dx * i}|${gridY + dy * i}`] !== undefined) {
                     powerups[(powerupMap[`${gridX + dx * i}|${gridY + dy * i}`])].pickup();
+                    powerupMap[`${gridX + dx * i}|${gridY + dy * i}`] = undefined;
                 }
             }
         }
