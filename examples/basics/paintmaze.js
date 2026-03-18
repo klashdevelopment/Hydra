@@ -1,20 +1,20 @@
-const FORCE_GITHACK = true; // used in dev
+const FORCE_GITHACK = false; // used for dev while in GlacierOS's Hydra IDE to force githack pathname
 
 let score = 0, level = 0, highscore = 0;
-
-// Paint Maze
 const lib = window.lib = new HydraCanvasLib('game', {
     enableExperimentalDPR: true,
     canvasHeight: 420,
     canvasWidth: 500
 });
 
+// TODO: store highscore and active data to prevent refreshes from having a bad effect.
 const store = lib.data.createStorage('paintmaze', {
     activeScore: 0,
     activeLevel: 0,
     highscore: 0
 });
 
+// The following generation function is 50% broken and was made entirely by Claude. It is the only AI section of this project
 function generateMaze(w, h) {
     const ri = (n) => Math.floor(Math.random() * n);
     function inBounds(r, c) { return r >= 0 && r < h && c >= 0 && c < w; }
@@ -314,7 +314,6 @@ function start() {
             await new Promise(r => setTimeout(r, 16));
         }
 
-        // Update grid position
         for (let i = 1; i <= run; i++) {
             const tile = hasTile(gridX + dx * i, gridY + dy * i);
             if (tile && tile.props.status !== 'painted') {
