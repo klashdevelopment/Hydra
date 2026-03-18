@@ -1,5 +1,7 @@
 const FORCE_GITHACK = false; // used in dev
 
+let score = 0;
+
 // Paint Maze
 const lib = window.lib = new HydraCanvasLib('game', {
     enableExperimentalDPR: true,
@@ -154,7 +156,7 @@ fetch((FORCE_GITHACK ? "https://rawcdn.githack.com/klashdevelopment/Hydra/main/"
         start();
     });
 
-function renderer(col, extra=[]) {
+function renderer(col, extra = []) {
     return SimpleRenderers.combination(
         SimpleRenderers.rectangle(20, 20, col),
         ...extra
@@ -175,6 +177,7 @@ function pickColor() {
     let color = colors[Math.floor(Math.random() * colors.length)];
     return color;
 }
+let mapValue;
 function pickMap() {
     var data = maps.length > 0 ? fixMap(maps[Math.floor(Math.random() * maps.length)]) : generateMaze(Math.floor(Math.random() * 20), Math.floor(Math.random() * 20));
 
@@ -185,11 +188,13 @@ function pickMap() {
         }
     }
 
+    mapValue = coords.length;
+
     if (coords.length > 0 && Math.random() > 0.3) {
         const randomOne = coords[Math.floor(Math.random() * coords.length)];
         powerupMap[`${randomOne.x}|${randomOne.y}`] = Object.keys(powerups)[Math.floor(Math.random() * Object.keys(powerups).length)];
     }
-    
+
     return data;
 }
 function setupMap(maze, color) {
@@ -199,11 +204,11 @@ function setupMap(maze, color) {
             let sprite;
             if (maze[y][x] === 0) {
                 let extra = [];
-                if(powerupMap[`${x}|${y}`] !== undefined) {
+                if (powerupMap[`${x}|${y}`] !== undefined) {
                     extra = powerups[powerupMap[`${x}|${y}`]].rnd;
                 }
                 sprite = lib.sprites.createNew(x * 20, y * 20, renderer('#383e47', extra));
-                if(extra.length>0) sprite.zIndex = 100;
+                if (extra.length > 0) sprite.zIndex = 100;
             }
             if (maze[y][x] === 2) {
                 sprite = lib.sprites.createNew(x * 20, y * 20, renderer(color));
@@ -226,20 +231,22 @@ function makeBall(maze, color) {
     let ballPos = getBallXY(maze);
     let ballX = ballPos[0];
     let ballY = ballPos[1];
-    return lib.sprites.createNew(ballY * 20 + 10, ballX * 20 + 10, SimpleRenderers.combination(
+    let ball = lib.sprites.createNew(ballY * 20 + 10, ballX * 20 + 10, SimpleRenderers.combination(
         SimpleRenderers.rectangle(20, 20, color, { x: -10, y: -10 }),
         SimpleRenderers.circle(8, '#fff')
     ));
+    ball.zIndex = 1000;
+    return ball;
 }
 
 let powerups = {
-    '200pts': {
+    '100pts': {
         rnd: [
-            SimpleRenderers.roundedRectangle(18, 18, 4, "#ffff00", {x: 1, y: 1}),
-            SimpleRenderers.text("200", 10, "Arial", "#000", {x: 1, y: 14})
+            SimpleRenderers.roundedRectangle(18, 18, 4, "#ddaa00", { x: 1, y: 1 }),
+            SimpleRenderers.text("100", 10, "Arial", "#fff", { x: 1, y: 14 })
         ],
         pickup: () => {
-            
+            score+=100;
         }
     }
 }
@@ -305,7 +312,8 @@ function start() {
         // Update grid position
         for (let i = 1; i <= run; i++) {
             const tile = hasTile(gridX + dx * i, gridY + dy * i);
-            if (tile) {
+            if (tile && tile.props.status !== 'painted') {
+                score += 0.5;
                 tile.renderer = renderer(color);
                 tile.props.status = 'painted';
 
@@ -327,6 +335,7 @@ function start() {
             // win
             setTimeout(() => {
                 reset();
+                score += mapValue;
                 setTimeout(setup, 100);
             }, 100);
         }
@@ -372,8 +381,17 @@ function start() {
     let text = lib.sprites.createNew(10, 20, textR(1));
     text.zIndex = 1000;
 
-    let permaText = lib.sprites.createNew(4, 414, SimpleRenderers.text('paintmaze.js | Hydra clone of AMAZE', 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    let permaText = lib.sprites.createNew(4, 414, SimpleRenderers.text('Hydra | paintmaze.js', 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
     permaText.zIndex = 1000;
+    const pt2text = "R to skip, WASD/↑↓←→/Mouse move";
+    let permaText2 = lib.sprites.createNew(495 - (lib.utility.getStringWidth(pt2text, 14, "KlashLegacy")), 414, SimpleRenderers.text(pt2text, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    permaText2.zIndex = 1000;
+
+    const scoreTextVal = () => {
+        return `${score} pts`;
+    };
+    let scoreText = lib.sprites.createNew(490 - (lib.utility.getStringWidth("10000pts", 14, "KlashLegacy")), 20, SimpleRenderers.text(scoreTextVal, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    scoreText.zIndex = 1000;
 
     let tick = 0;
     let textOpacity = 1;
