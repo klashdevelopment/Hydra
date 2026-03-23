@@ -389,7 +389,8 @@ function start() {
     let permaText = lib.sprites.createNew(4, 414, SimpleRenderers.text('Hydra | paintmaze.js', 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
     permaText.zIndex = 1000;
     const pt2text = "R to skip, WASD/↑↓←→/Mouse move";
-    let permaText2 = lib.sprites.createNew(495 - (lib.utility.getStringWidth(pt2text, 14, "KlashLegacy")), 414, SimpleRenderers.text(pt2text, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
+    const pt2textW = "R to skip, WASD/UDLR/Mouse move";
+    let permaText2 = lib.sprites.createNew(495 - (lib.utility.getStringWidth(pt2textW, 14, "KlashLegacy")), 414, SimpleRenderers.text(pt2text, 14, "KlashLegacy", "#ffffff", { x: 0, y: 0 }));
     permaText2.zIndex = 1000;
 
     const scoreTextVal = () => {
