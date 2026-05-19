@@ -1,5 +1,5 @@
 import * as ART from "./art.js";
-// Simple portal game
+// More advanced example - 2D portal game
 
 const lib = new HydraCanvasLib('game', {
     enableExperimentalDPR: true,

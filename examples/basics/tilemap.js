@@ -70,9 +70,9 @@ function gravity(deltaTime) {
     }
 
     // Then check for ground collision
-    if (lib.collision.checkCollision(sprite, player)) {
+    if (lib.collision.checkCollision(tilemap, player)) {
         // Move player up until we're not colliding anymore
-        while (lib.collision.checkCollision(sprite, player)) {
+        while (lib.collision.checkCollision(tilemap, player)) {
             player.y -= 1;
         }
         player.y += 1;
@@ -85,6 +85,7 @@ function gravity(deltaTime) {
     }
 }
 
+// jump function, applies vertical velocity if grounded
 function jump() {
     if (grounded) {
         player.props.velocity.y = -8;
@@ -97,6 +98,7 @@ function applyVelocity() {
     player.x += player.props.velocity.x;
     player.y += player.props.velocity.y;
 
+    // loop back to top if we fall off the screen
     if (player.y > lib.utility.getScreenSize().height + 100) {
         player.props.velocity.y = 0;
         player.x = 0;
@@ -109,6 +111,9 @@ lib.loop(60);
 
 // set background color to Terraria hallow biome
 lib.world.setBackgroundImage("https://github.com/GavinGoGaming/cubingclub/blob/main/assets/hl_charging.png?raw=true");
+
+// variable for horizontal speed
+const speed = 5;
 
 lib.listen.addTicker((dT) => {
     // Uncomment to show Gizmos
@@ -124,9 +129,9 @@ lib.listen.addTicker((dT) => {
 
     // Check for left and right movement
     if (lib.listen.isKey('ArrowLeft')) {
-        player.props.velocity.x = -2;
+        player.props.velocity.x = -speed;
     } else if (lib.listen.isKey('ArrowRight')) {
-        player.props.velocity.x = 2;
+        player.props.velocity.x = speed;
     } else {
         player.props.velocity.x = 0;
     }

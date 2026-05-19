@@ -23,16 +23,17 @@ let newPhysics = (sprite, collisions = [], extras) => ({
 let collisions = {
     walls: [],
     platforms: [],
-    hazards: []
+    hazards: [],
+    circles: []
 };
 
-// All the stuff here is just for the example, you can ignore it
+// ========== All the stuff here is just for the example, you can ignore it
 const GAME_CONFIG = {
     backgroundColor: '#edd',
     playerColor: '#2C3E50',
     wallColor: '#34495E',
     platformColor: '#E67E22',
-    debugMode: true // draws collision gizmos
+    debugMode: false // draws collision gizmos always
 };
 let latestCollision = null;
 lib.world.setBackgroundColor(GAME_CONFIG.backgroundColor);
@@ -42,17 +43,21 @@ const playerSprite = lib.sprites.createNew(info.center.x, info.center.y - 100, S
     SimpleRenderers.roundedRectangle(6, 18, 3, GAME_CONFIG.playerColor, { x: 1, y: 45 }),
     SimpleRenderers.roundedRectangle(6, 18, 3, GAME_CONFIG.playerColor, { x: 9, y: 45 }),
     SimpleRenderers.roundedRectangle(8, 25, 3, GAME_CONFIG.playerColor, { x: -6, y: 20 }),
-    SimpleRenderers.roundedRectangle(8, 25, 3, GAME_CONFIG.playerColor, { x: 16, y: 20 })
+    SimpleRenderers.roundedRectangle(8, 25, 3, GAME_CONFIG.playerColor, { x: 13, y: 20 })
 ));
 playerSprite.collider = lib.collision.makeSquareCollider(18, 60, { x: -1, y: 0 });
-const player = newPhysics(playerSprite, ['walls', 'platforms'], {
+const player = newPhysics(playerSprite, ['walls', 'platforms', 'circles'], {
     onCollidedWith: (collider, group, direction) => {
-        latestCollision = `${direction.toUpperCase()} side of a ${collider.collider.type} collider in groups: ${group.join(', ')}`;
+        latestCollision = `Collided with (${collider.collider.type}) collider in groups: ${group.join(', ')}`;
     }
 });
 physics.push(player);
 lib.sprites.createNew(20, 40, SimpleRenderers.text(()=>(latestCollision || 'No collision'), 20, 'Arial', 'black'));
+lib.sprites.createNew(20, 54, SimpleRenderers.text("Press G for gizmos", 14, 'Arial', 'black'));
+
 function createLevel() {
+
+    //walls
     const ground = lib.sprites.createNew(0, info.size.height - 15, 
         SimpleRenderers.roundedRectangle(info.size.width, 30, 8, GAME_CONFIG.wallColor));
     ground.collider = lib.collision.makeSquareCollider(info.size.width, 30, { x: 0, y: 0 });
@@ -73,6 +78,7 @@ function createLevel() {
     roof.collider = lib.collision.makeSquareCollider(info.size.width, 30, { x: 0, y: 0 });
     collisions.walls.push(roof);
     
+    // rectangle platforms
     const platforms = [
         { x: 200, y: info.size.height - 100, w: 120, h: 20 },
         { x: 400, y: info.size.height - 220, w: 100, h: 20 },
@@ -90,7 +96,23 @@ function createLevel() {
             collisions[p.group].push(platform);
         }
     });
+
+    // circular platforms
+    const circles = [
+        { x: 300, y: info.size.height - 150, r: 15 },
+        { x: 550, y: info.size.height - 250, r: 20 },
+        { x: 150, y: info.size.height - 200, r: 10 }
+    ]
+
+    circles.forEach(c => {
+        const circle = lib.sprites.createNew(c.x, c.y, 
+            SimpleRenderers.circle(c.r, GAME_CONFIG.wallColor));
+        circle.collider = lib.collision.makeCircleCollider(c.r, { x: 0, y: 0 });
+        collisions.circles.push(circle);
+    });
 }
+
+// ============= END
 
 // Now we start the physics engine
 
@@ -155,7 +177,10 @@ function applyPhysics(object) {
                 
                 if (object.velocity.y > 0 && originalPos.y < collider.y) {
                     object.grounded = true;
-                    object.sprite.y = collider.y + collider.collider.offset.y - object.sprite.collider.height - object.sprite.collider.offset.y;
+                    const colliderTop = collider.collider.type === 'circle'
+                        ? (collider.y + collider.collider.offset.y - collider.collider.radius)
+                        : (collider.y + collider.collider.offset.y);
+                    object.sprite.y = colliderTop - object.sprite.collider.height - object.sprite.collider.offset.y;
                 } else {
                     object.sprite.y = originalPos.y;
                 }
@@ -202,7 +227,7 @@ lib.listen.addTicker(() => {
     handleInput();
     
     // draw collision gizmos for testing
-    if (GAME_CONFIG.debugMode) {
+    if (GAME_CONFIG.debugMode || lib.listen.isKey('g')) {
         lib.sprites.sprites.forEach(sprite => {
             if (sprite.collider) {
                 lib.utility.drawColliderGizmos(sprite);

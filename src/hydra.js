@@ -747,6 +747,9 @@ class HydraCanvasLib {
                             var spriteY = sprite.y + sprite.collider.offset.y;
                             var spriteWidth = sprite.collider.width;
                             var spriteHeight = sprite.collider.height;
+                            if(!tilemap.map || tilemap.map.length === 0 || tilemap.map[0].length === 0) {
+                                return false;
+                            }
                             for (let i = 0; i < tilemap.map.length; i++) {
                                 for (let j = 0; j < tilemap.map[i].length; j++) {
                                     const tile = tilemap.map[i][j];

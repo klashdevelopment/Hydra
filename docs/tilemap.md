@@ -47,6 +47,6 @@ tileSprite.collider = tilemap.collider; // Tilemaps come with a unique collider 
 ### Tilemap collision
 You can check collision with a tilemap like anything else:
 ```js
-// use the tileSprite, not the tilemap/tileset
-lib.collision.checkCollision(tileSprite, exampleOtherSprite)
+// use the tilemap
+lib.collision.checkCollision(tilemap, exampleOtherSprite)
 ```
